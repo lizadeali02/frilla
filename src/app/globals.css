@@ -1,0 +1,132 @@
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+@import "tailwindcss";
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+/* ============ Ümumi cilalama ============ */
+
+/* Hamar sürüşdürmə */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Bütün keçidlərin standart sürəti bir az yumşaq olsun */
+a, button {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Düymələrə basanda yüngül "basma" effekti */
+button:active, a:active {
+  transform: scale(0.97);
+}
+
+/* Fokus halında incə bənövşəyi halqa (klaviatura ilə naviqasiya üçün) */
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+
+/* Seçilmiş mətnin rəngi (Ctrl+A / mouse ilə seçəndə) */
+::selection {
+  background-color: #ede9fe;
+  color: #5b21b6;
+}
+
+/* İncə, müasir scrollbar (Chrome/Edge) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  border: 2px solid #ffffff;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #d1d5db;
+}
+
+/* Şəkillər yüklənəndə yumşaq görünsün (fade-in) */
+img {
+  transition: opacity 0.3s ease;
+}
+
+/* Kartlar üzərinə keçəndə kölgə keçidi hamar olsun */
+.shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+/* ============ WOW effektləri üçün animasiyalar ============ */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes softPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.blob {
+  animation: blobFloat 12s ease-in-out infinite;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #7c3aed, #a855f7, #7c3aed);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 6s ease-in-out infinite;
+}
+
+.pulse-badge {
+  animation: softPulse 2.5s ease-in-out infinite;
+}
+
+/* Scroll-reveal: JS tərəfindən "in-view" class-ı əlavə olunanda görünür */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
