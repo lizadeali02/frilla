@@ -15,8 +15,8 @@ export default function SifreUnutdum() {
     setError('')
 
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + '/yeni-sifre',
-    })
+  redirectTo: "https://frilla.vercel.app/reset-password",
+});
 
     setLoading(false)
 
