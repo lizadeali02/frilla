@@ -14,7 +14,7 @@ export default function MexfilikSiyaseti() {
 
       <div className="max-w-3xl mx-auto px-6 py-16">
         <h1 className="text-3xl font-semibold text-gray-900 tracking-tight mb-2">Məxfilik Siyasəti</h1>
-        <p className="text-gray-400 text-sm mb-10">Son yenilənmə: 2026</p>
+        <p className="text-gray-400 text-sm mb-10">Son yenilənmə: 28.07.2026</p>
 
         <div className="flex flex-col gap-8 text-gray-700 leading-relaxed">
           <section>

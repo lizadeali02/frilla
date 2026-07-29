@@ -133,6 +133,18 @@ export default function FreelancerProfile() {
                 )}
               </div>
               <p className="text-gray-500 text-sm mt-0.5">Frila-ya qoşulub: {formatDate(profile.created_at)}</p>
+              {profile.availability && (
+                <div className="flex items-center gap-1.5 mt-2">
+                  <span className={`w-2 h-2 rounded-full ${
+                    profile.availability === 'active' ? 'bg-green-500' :
+                    profile.availability === 'busy' ? 'bg-amber-500' : 'bg-red-500'
+                  }`} />
+                  <span className="text-sm text-gray-600 font-medium">
+                    {profile.availability === 'active' ? 'Aktiv' :
+                     profile.availability === 'busy' ? 'Məşğul' : 'Məzuniyyətdə'}
+                  </span>
+                </div>
+              )}
               {stats.reviewCount > 0 ? (
                 <p className="text-gray-600 text-sm mt-0.5 flex items-center gap-1.5 flex-wrap">
                   <span className="text-amber-500 font-medium">★ {stats.avgRating.toFixed(1)}</span>

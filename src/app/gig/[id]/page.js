@@ -55,7 +55,7 @@ export default function GigDetail() {
 
     const { data: gigData } = await supabase
       .from('gigs')
-      .select('*, profiles(id, full_name, avatar_url, created_at)')
+      .select('*, profiles(id, full_name, avatar_url, created_at, availability)')
       .eq('id', params.id)
       .single()
 
@@ -301,7 +301,20 @@ const handleOrder = async () => {
               )}
               <div>
                 <p className="font-semibold text-gray-900">{freelancer.full_name}</p>
-                <p className="text-sm text-gray-500">⭐ Yeni satıcı · Profili gör</p>
+                <p className="text-sm text-gray-500 flex items-center gap-1.5">
+                  ⭐ Yeni satıcı
+                  {freelancer.availability && (
+                    <>
+                      <span className="text-gray-300">·</span>
+                      <span className={`w-1.5 h-1.5 rounded-full ${
+                        freelancer.availability === 'active' ? 'bg-green-500' :
+                        freelancer.availability === 'busy' ? 'bg-amber-500' : 'bg-red-500'
+                      }`} />
+                      {freelancer.availability === 'active' ? 'Aktiv' :
+                       freelancer.availability === 'busy' ? 'Məşğul' : 'Məzuniyyətdə'}
+                    </>
+                  )}
+                </p>
               </div>
             </a>
           )}

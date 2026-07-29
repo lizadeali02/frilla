@@ -36,6 +36,7 @@ export default function Profilim() {
   const [myGigs, setMyGigs] = useState([])
   const [myOrders, setMyOrders] = useState([])
   const [stats, setStats] = useState({ completedOrders: 0, totalEarnings: 0, avgRating: 0, reviewCount: 0 })
+  const [updatingAvailability, setUpdatingAvailability] = useState(false)
   const [myBuyerOrders, setMyBuyerOrders] = useState([])
   const [uploading, setUploading] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
@@ -158,6 +159,13 @@ export default function Profilim() {
   }
 
   const unreadCount = notifications.filter((n) => !n.read).length
+
+  const handleAvailabilityChange = async (value) => {
+    setUpdatingAvailability(true)
+    await supabase.from('profiles').update({ availability: value }).eq('id', user.id)
+    setProfile((prev) => ({ ...prev, availability: value }))
+    setUpdatingAvailability(false)
+  }
 
   const handleAvatarUpload = async (e) => {
     const file = e.target.files[0]
@@ -415,6 +423,33 @@ export default function Profilim() {
                 <p className="text-gray-500 text-sm mt-0.5">
                   {user?.email} · Frila-ya qoşulub: {joinedDate}
                 </p>
+                {profile?.role === 'freelancer' && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-xs text-gray-400 font-medium">Uyğunluq:</span>
+                    <div className="flex gap-1.5">
+                      {[
+                        { key: 'active', label: 'Aktiv', color: 'bg-green-500' },
+                        { key: 'busy', label: 'Məşğul', color: 'bg-amber-500' },
+                        { key: 'vacation', label: 'Məzuniyyətdə', color: 'bg-red-500' },
+                      ].map((opt) => (
+                        <button
+                          key={opt.key}
+                          type="button"
+                          disabled={updatingAvailability}
+                          onClick={() => handleAvailabilityChange(opt.key)}
+                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition ${
+                            profile?.availability === opt.key
+                              ? 'border-gray-300 bg-gray-50 text-gray-900'
+                              : 'border-transparent text-gray-400 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span className={`w-2 h-2 rounded-full ${opt.color}`} />
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
