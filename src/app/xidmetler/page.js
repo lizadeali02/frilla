@@ -19,6 +19,7 @@ function XidmetlerContent() {
   const [searchInput, setSearchInput] = useState('')
   const [activeCategory, setActiveCategory] = useState('')
   const [sortBy, setSortBy] = useState('newest')
+  const [activeOnly, setActiveOnly] = useState(false)
   const [notifications, setNotifications] = useState([])
   const [showNotifications, setShowNotifications] = useState(false)
   const [categories, setCategories] = useState([])
@@ -84,7 +85,7 @@ function XidmetlerContent() {
     setLoading(true)
     let request = supabase
       .from('gigs')
-      .select('*, profiles(id, full_name, avatar_url), gig_images(image_url, sort_order)')
+      .select('*, profiles(id, full_name, avatar_url, availability), gig_images(image_url, sort_order)')
 
     if (q) {
       request = request.or('title.ilike.%' + q + '%,description.ilike.%' + q + '%,category.ilike.%' + q + '%')
@@ -258,6 +259,14 @@ function XidmetlerContent() {
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
           </select>
+          <button
+            type="button"
+            onClick={() => setActiveOnly((prev) => !prev)}
+            className={"flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all flex-shrink-0 " + (activeOnly ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}
+          >
+            <span className="w-2 h-2 rounded-full bg-green-500" />
+            Yalnız aktiv freelancerlər
+          </button>
 
           <select
             value={sortBy}
@@ -290,7 +299,7 @@ function XidmetlerContent() {
             </div>
           ) : (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {gigs.map((gig) => {
+              {gigs.filter((g) => !activeOnly || g.profiles?.availability === 'active').map((gig) => {
                 const freelancer = gig.profiles
                 const fInitials = (freelancer?.full_name || '?')
                   .split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
@@ -346,7 +355,15 @@ function XidmetlerContent() {
                             <p className="text-sm text-gray-700 font-medium group-hover/avatar:text-purple-700 transition-colors truncate">
                               {freelancer.full_name}
                             </p>
-                            <p className="text-xs text-gray-400">⭐ Yeni satıcı</p>
+                            <p className="text-xs text-gray-400 flex items-center gap-1">
+                              ⭐ Yeni satıcı
+                              {freelancer.availability && (
+                                <span className={`w-1.5 h-1.5 rounded-full ml-1 ${
+                                  freelancer.availability === 'active' ? 'bg-green-500' :
+                                  freelancer.availability === 'busy' ? 'bg-amber-500' : 'bg-red-500'
+                                }`} />
+                              )}
+                            </p>
                           </div>
                         </a>
                       )}
