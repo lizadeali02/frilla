@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '../../../lib/supabaseClient'
 import { useParams } from 'next/navigation'
 
@@ -20,7 +21,11 @@ export default function FreelancerProfile() {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({ avgRating: 0, reviewCount: 0 })
   const [completedCount, setCompletedCount] = useState(0)
+  const [following, setFollowing] = useState(false)
+const [followers, setFollowers] = useState(0)
+const router = useRouter()
   const params = useParams()
+  
 
   useEffect(() => {
     loadData()
@@ -35,6 +40,28 @@ export default function FreelancerProfile() {
       .single()
 
     if (!profileData) {
+      const {
+    data: { user }
+} = await supabase.auth.getUser()
+
+if (user) {
+
+    const { count } = await supabase
+        .from("followers")
+        .select("*", { count: "exact", head: true })
+        .eq("freelancer_id", params.id)
+
+    setFollowers(count || 0)
+
+    const { data: followData } = await supabase
+        .from("followers")
+        .select("*")
+        .eq("follower_id", user.id)
+        .eq("freelancer_id", params.id)
+        .maybeSingle()
+
+    setFollowing(!!followData)
+}
       setLoading(false)
       return
     }
@@ -76,6 +103,35 @@ export default function FreelancerProfile() {
 
     setLoading(false)
   }
+  const toggleFollow = async () => {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    router.push("/login")
+    return
+  }
+
+  if (following) {
+    await supabase
+      .from("followers")
+      .delete()
+      .eq("follower_id", user.id)
+      .eq("freelancer_id", params.id)
+
+    setFollowing(false)
+    setFollowers((prev) => prev - 1)
+  } else {
+    await supabase.from("followers").insert({
+      follower_id: user.id,
+      freelancer_id: params.id,
+    })
+
+    setFollowing(true)
+    setFollowers((prev) => prev + 1)
+  }
+}
 
   if (loading) {
     return (
@@ -125,7 +181,24 @@ export default function FreelancerProfile() {
             )}
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">{profile.full_name}</h1>
+                <div className="flex items-center gap-3 flex-wrap">
+
+  <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
+    {profile.full_name}
+  </h1>
+
+  <button
+    onClick={toggleFollow}
+    className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
+      following
+        ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+        : "bg-purple-600 text-white hover:bg-purple-700"
+    }`}
+  >
+    {following ? "✓ Following" : "+ Follow"}
+  </button>
+
+</div>
                 {stats.reviewCount === 0 && (
                   <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-amber-50 text-amber-700 rounded-full text-xs font-semibold">
                     ⭐ Yeni Satıcı
@@ -133,6 +206,9 @@ export default function FreelancerProfile() {
                 )}
               </div>
               <p className="text-gray-500 text-sm mt-0.5">Frila-ya qoşulub: {formatDate(profile.created_at)}</p>
+              <p className="text-sm text-gray-500 mt-1">
+  👥 {followers} follower
+</p>
               {profile.availability && (
                 <div className="flex items-center gap-1.5 mt-2">
                   <span className={`w-2 h-2 rounded-full ${
