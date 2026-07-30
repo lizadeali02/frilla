@@ -92,6 +92,7 @@ export default function SifarisDetail() {
       return
     }
     setUser(user)
+    await supabase.from('profiles').update({ last_seen: new Date().toISOString() }).eq('id', user.id)
 
     const { data: orderData } = await supabase
       .from('orders')
@@ -285,6 +286,17 @@ export default function SifarisDetail() {
   const isSeller = user?.id === order.seller_id
   const currentStepIndex = STEPS.indexOf(order.status)
   const isCancelled = order.status === 'cancelled'
+  const formatLastSeen = (dateStr) => {
+    if (!dateStr) return ''
+    const diffMs = Date.now() - new Date(dateStr).getTime()
+    const diffMin = Math.floor(diffMs / 60000)
+    if (diffMin < 2) return 'Onlayn'
+    if (diffMin < 60) return diffMin + ' dəqiqə əvvəl görüldü'
+    const diffHour = Math.floor(diffMin / 60)
+    if (diffHour < 24) return diffHour + ' saat əvvəl görüldü'
+    const diffDay = Math.floor(diffHour / 24)
+    return diffDay + ' gün əvvəl görüldü'
+  }
   const isImageFile = (name) => /\.(jpe?g|png|gif|webp)$/i.test(name || '')
 
   return (
@@ -455,7 +467,9 @@ export default function SifarisDetail() {
           <div className="rounded-3xl border border-gray-200 shadow-sm flex flex-col h-[600px]">
             <div className="px-6 py-4 border-b border-gray-100">
               <h2 className="font-semibold text-gray-900">Danışıq</h2>
-              <p className="text-xs text-gray-400 mt-0.5">Layihə haqqında məlumat mübadiləsi et, fayl göndər</p>
+              <p className="text-xs text-gray-400 mt-0.5">
+                {isBuyer ? formatLastSeen(seller?.last_seen) : formatLastSeen(buyer?.last_seen)}
+              </p>
             </div>
 
             <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-4">
