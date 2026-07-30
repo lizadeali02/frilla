@@ -20,6 +20,10 @@ export default function FreelancerProfile() {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({ avgRating: 0, reviewCount: 0 })
   const [completedCount, setCompletedCount] = useState(0)
+  const [currentUser, setCurrentUser] = useState(null)
+  const [isFollowing, setIsFollowing] = useState(false)
+  const [followerCount, setFollowerCount] = useState(0)
+  const [followLoading, setFollowLoading] = useState(false)
   const params = useParams()
 
   useEffect(() => {
@@ -74,7 +78,44 @@ export default function FreelancerProfile() {
       .eq('status', 'completed')
     setCompletedCount(count || 0)
 
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    setCurrentUser(authUser)
+
+    const { count: followers } = await supabase
+      .from('freelancer_follows')
+      .select('*', { count: 'exact', head: true })
+      .eq('freelancer_id', params.id)
+    setFollowerCount(followers || 0)
+
+    if (authUser) {
+      const { data: followData } = await supabase
+        .from('freelancer_follows')
+        .select('id')
+        .eq('follower_id', authUser.id)
+        .eq('freelancer_id', params.id)
+        .maybeSingle()
+      setIsFollowing(Boolean(followData))
+    }
+
     setLoading(false)
+  }
+
+  const toggleFollow = async () => {
+    if (!currentUser) {
+      window.location.href = '/giris'
+      return
+    }
+    setFollowLoading(true)
+    if (isFollowing) {
+      await supabase.from('freelancer_follows').delete().eq('follower_id', currentUser.id).eq('freelancer_id', params.id)
+      setIsFollowing(false)
+      setFollowerCount((c) => c - 1)
+    } else {
+      await supabase.from('freelancer_follows').insert({ follower_id: currentUser.id, freelancer_id: params.id })
+      setIsFollowing(true)
+      setFollowerCount((c) => c + 1)
+    }
+    setFollowLoading(false)
   }
 
   if (loading) {
@@ -154,6 +195,20 @@ export default function FreelancerProfile() {
               ) : (
                 <p className="text-gray-400 text-sm mt-0.5">Hələ rəy yoxdur</p>
               )}
+              <div className="flex items-center justify-between mt-5 pt-5 border-t border-gray-100">
+            <span className="text-sm text-gray-500">{followerCount} izləyici</span>
+            <button
+              onClick={toggleFollow}
+              disabled={followLoading}
+              className={`px-5 py-2 rounded-full text-sm font-medium transition ${
+                isFollowing
+                  ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  : 'bg-purple-700 text-white hover:bg-purple-800'
+              }`}
+            >
+              {isFollowing ? 'İzlənilir ✓' : '+ İzlə'}
+            </button>
+          </div>
             </div>
           </div>
         </div>
