@@ -193,6 +193,8 @@ export default function Home() {
                     </>
                   )}
                 </div>
+                <a href="/sevimliler" className="text-gray-500 hover:text-gray-900 transition-colors">Sevimlilər</a>
+                <a href="/mesajlarim" className="text-gray-500 hover:text-gray-900 transition-colors">Mesajlarım</a>
 
                 <a href="/profilim" className="text-gray-500 hover:text-gray-900 transition-colors">
                   Profilim
