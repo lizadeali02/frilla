@@ -186,7 +186,7 @@ function XidmetlerContent() {
                     </>
                   )}
                 </div>
-
+                <a href="/sevimliler" className="text-gray-500 hover:text-gray-900 transition-colors">Sevimlilər</a>
                 <a href="/profilim" className="text-gray-500 hover:text-gray-900 transition-colors">Profilim</a>
                 <button onClick={handleSignOut} className="px-4 py-1.5 text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors">
                   Çıxış
