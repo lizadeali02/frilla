@@ -24,6 +24,7 @@ export default function FreelancerProfile() {
   const [isFollowing, setIsFollowing] = useState(false)
   const [followerCount, setFollowerCount] = useState(0)
   const [followLoading, setFollowLoading] = useState(false)
+  const [faqs, setFaqs] = useState([])
   const params = useParams()
 
   useEffect(() => {
@@ -77,6 +78,12 @@ export default function FreelancerProfile() {
       .eq('seller_id', params.id)
       .eq('status', 'completed')
     setCompletedCount(count || 0)
+    const { data: faqsData } = await supabase
+      .from('freelancer_faqs')
+      .select('*')
+      .eq('freelancer_id', params.id)
+      .order('sort_order', { ascending: true })
+    setFaqs(faqsData || [])
 
     const { data: { user: authUser } } = await supabase.auth.getUser()
     setCurrentUser(authUser)
@@ -99,6 +106,21 @@ export default function FreelancerProfile() {
 
     setLoading(false)
   }
+  {faqs.length > 0 && (
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 mb-6">
+            <h3 className="font-semibold text-gray-900 mb-5">Tez-tez verilən suallar</h3>
+            <div className="flex flex-col gap-4">
+              {faqs.map((faq) => (
+                <div key={faq.id} className="pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                  <p className="font-medium text-gray-900 text-sm mb-1">{faq.question}</p>
+                  <p className="text-gray-500 text-sm leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Xidmətləri */}
 
   const toggleFollow = async () => {
     if (!currentUser) {

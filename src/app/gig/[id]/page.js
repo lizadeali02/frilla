@@ -132,10 +132,19 @@ const handleOrder = async () => {
 
     setOrdering(false)
 
-    if (error) {
+   if (error) {
       setOrderError('Xəta baş verdi: ' + error.message)
       return
     }
+
+    const packageLabel = activePackage.tier === 'basic' ? 'Basic' : activePackage.tier === 'standard' ? 'Standard' : 'Premium'
+    await supabase.from('order_messages').insert({
+      order_id: data.id,
+      sender_id: user.id,
+      content: `📋 Yeni sifariş\n\nXidmət: ${gig.title}\nPaket: ${packageLabel}\nQiymət: ${activePackage.price} AZN\nÇatdırılma: ${activePackage.delivery_days} gün\n\nSalam! Bu sifarişi verdim, zəhmət olmasa layihə haqqında ətraflı məlumat üçün mənimlə əlaqə saxlayın.`,
+    })
+
+    router.push('/sifaris/' + data.id)
 
     await supabase.from('notifications').insert({
       user_id: freelancer.id,

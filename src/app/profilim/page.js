@@ -37,6 +37,10 @@ export default function Profilim() {
   const [myOrders, setMyOrders] = useState([])
   const [stats, setStats] = useState({ completedOrders: 0, totalEarnings: 0, avgRating: 0, reviewCount: 0 })
   const [updatingAvailability, setUpdatingAvailability] = useState(false)
+  const [faqs, setFaqs] = useState([])
+  const [newQuestion, setNewQuestion] = useState('')
+  const [newAnswer, setNewAnswer] = useState('')
+  const [addingFaq, setAddingFaq] = useState(false)
   const [myBuyerOrders, setMyBuyerOrders] = useState([])
   const [uploading, setUploading] = useState(false)
   const [uploadingAvatar, setUploadingAvatar] = useState(false)
@@ -108,6 +112,12 @@ export default function Profilim() {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
       setMyGigs(gigsData || [])
+      const { data: faqsData } = await supabase
+        .from('freelancer_faqs')
+        .select('*')
+        .eq('freelancer_id', user.id)
+        .order('sort_order', { ascending: true })
+      setFaqs(faqsData || [])
 
       const { data: ordersData } = await supabase
         .from('orders')
@@ -282,6 +292,27 @@ export default function Profilim() {
     const { error } = await supabase.from('portfolio_images').delete().eq('id', imageId)
     if (!error) loadData()
   }
+const handleAddFaq = async (e) => {
+    e.preventDefault()
+    if (!newQuestion.trim() || !newAnswer.trim()) return
+    setAddingFaq(true)
+    await supabase.from('freelancer_faqs').insert({
+      freelancer_id: user.id,
+      question: newQuestion.trim(),
+      answer: newAnswer.trim(),
+      sort_order: faqs.length,
+    })
+    setNewQuestion('')
+    setNewAnswer('')
+    setAddingFaq(false)
+    loadData()
+  }
+
+  const handleDeleteFaq = async (faqId) => {
+    await supabase.from('freelancer_faqs').delete().eq('id', faqId)
+    loadData()
+  }
+
 
   const handleDeleteGig = async (gigId) => {
     if (!confirm('Bu xidməti silmək istədiyinizə əminsiniz?')) return
@@ -714,6 +745,57 @@ export default function Profilim() {
                             className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition">
                             Sil
                           </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+               </div>
+
+                <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
+                  <h3 className="font-semibold text-gray-900 mb-5">Tez-tez verilən suallar</h3>
+
+                  <form onSubmit={handleAddFaq} className="flex flex-col gap-3 mb-6 pb-6 border-b border-gray-100">
+                    <input
+                      type="text"
+                      value={newQuestion}
+                      onChange={(e) => setNewQuestion(e.target.value)}
+                      placeholder="Sual (məs: Neçə düzəliş edirsiniz?)"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-sm"
+                    />
+                    <textarea
+                      value={newAnswer}
+                      onChange={(e) => setNewAnswer(e.target.value)}
+                      placeholder="Cavab"
+                      rows={2}
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-sm resize-none"
+                    />
+                    <button
+                      type="submit"
+                      disabled={addingFaq}
+                      className="self-start px-4 py-2 bg-purple-700 text-white rounded-full text-sm font-medium hover:bg-purple-800 transition disabled:opacity-50"
+                    >
+                      {addingFaq ? 'Əlavə edilir...' : '+ Sual əlavə et'}
+                    </button>
+                  </form>
+
+                  {faqs.length === 0 ? (
+                    <p className="text-gray-400 text-sm">Hələ heç bir sual əlavə etməmisiniz</p>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {faqs.map((faq) => (
+                        <div key={faq.id} className="border border-gray-100 rounded-2xl p-4">
+                          <div className="flex justify-between items-start gap-3">
+                            <div>
+                              <p className="font-medium text-gray-900 text-sm mb-1">{faq.question}</p>
+                              <p className="text-gray-500 text-sm">{faq.answer}</p>
+                            </div>
+                            <button
+                              onClick={() => handleDeleteFaq(faq.id)}
+                              className="text-xs text-red-500 hover:underline flex-shrink-0"
+                            >
+                              Sil
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>

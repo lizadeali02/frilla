@@ -11,6 +11,12 @@ const STATUS_LABELS = {
   completed: 'Tamamlanıb',
   cancelled: 'Ləğv edilib',
 }
+const SABLONLAR = [
+  { label: 'Salamlaşma', text: 'Salam! Sifarişiniz üçün təşəkkür edirəm. İşə tezliklə başlayacağam.' },
+  { label: 'Məlumat istə', text: 'Layihəni daha yaxşı başa düşmək üçün əlavə məlumat/fayl göndərə bilərsinizmi?' },
+  { label: 'İş başladı', text: 'İşə başladım, gözlənilən müddət ərzində təhvil verəcəyəm.' },
+  { label: 'Təşəkkür', text: 'Sifarişiniz üçün təşəkkür edirəm! Növbəti dəfə də sizinlə işləməkdən məmnun olaram.' },
+]
 
 const STATUS_COLORS = {
   pending: 'bg-amber-100 text-amber-700',
@@ -57,6 +63,7 @@ export default function SifarisDetail() {
   const [messageText, setMessageText] = useState('')
   const [sending, setSending] = useState(false)
   const [uploadingFile, setUploadingFile] = useState(false)
+  const [showTemplates, setShowTemplates] = useState(false)
   const messagesEndRef = useRef(null)
 
   const [existingReview, setExistingReview] = useState(null)
@@ -200,6 +207,15 @@ export default function SifarisDetail() {
 
     setShowReviewForm(false)
     loadOrder()
+  }
+  const sendTemplate = async (text) => {
+    setShowTemplates(false)
+    await supabase.from('order_messages').insert({
+      order_id: order.id,
+      sender_id: user.id,
+      content: text,
+    })
+    loadMessages()
   }
 
   const sendMessage = async (e) => {
@@ -526,8 +542,33 @@ export default function SifarisDetail() {
               )}
               <div ref={messagesEndRef} />
             </div>
+            {isSeller && (
+              <div className="relative border-t border-gray-100 px-4 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowTemplates((prev) => !prev)}
+                  className="flex items-center gap-1.5 text-xs text-purple-700 font-medium hover:underline mb-2"
+                >
+                  + Hazır şablon göndər
+                </button>
+                {showTemplates && (
+                  <div className="absolute bottom-full left-4 mb-1 bg-white border border-gray-200 rounded-2xl shadow-xl p-2 w-64 z-10">
+                    {SABLONLAR.map((s) => (
+                      <button
+                        key={s.label}
+                        type="button"
+                        onClick={() => sendTemplate(s.text)}
+                        className="w-full text-left px-3 py-2 rounded-xl hover:bg-purple-50 transition text-sm text-gray-700"
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
-            <form onSubmit={sendMessage} className="border-t border-gray-100 p-4 flex items-center gap-2">
+            <form onSubmit={sendMessage} className="p-4 flex items-center gap-2">
               <label className="flex-shrink-0 cursor-pointer p-2.5 rounded-full hover:bg-gray-100 transition">
                 {uploadingFile ? (
                   <span className="text-xs text-gray-400">...</span>
