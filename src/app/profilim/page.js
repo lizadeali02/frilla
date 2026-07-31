@@ -759,12 +759,7 @@ const handleAddFaq = async (e) => {
                           placeholder="Sertifikatlarının siyahısı" />
                       </div>
 
-                      <div>
-                        <label className="text-sm text-gray-600 font-medium">Bank rekvizitləri (istəyə bağlı, yalnız admin görür)</label>
-                        <textarea value={editRequisites} onChange={(e) => setEditRequisites(e.target.value)} rows={2}
-                          className="w-full mt-1.5 px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"
-                          placeholder="Ödəniş üçün bank hesab məlumatları" />
-                      </div>
+                      
                       <div className="flex gap-3 mt-1">
                         <button type="submit" disabled={savingProfile}
                           className="px-5 py-2.5 bg-purple-700 text-white rounded-xl font-medium hover:bg-purple-800 transition-all disabled:opacity-50">
