@@ -248,8 +248,8 @@ export default function SifarisDetail() {
     const file = e.target.files[0]
     if (!file) return
 
-    if (file.size > 20 * 1024 * 1024) {
-      setError('Fayl 20MB-dan kiçik olmalıdır')
+    if (file.size > 100 * 1024 * 1024) {
+      setError('Fayl 100MB-dan kiçik olmalıdır')
       return
     }
 
@@ -314,6 +314,7 @@ export default function SifarisDetail() {
     return diffDay + ' gün əvvəl görüldü'
   }
   const isImageFile = (name) => /\.(jpe?g|png|gif|webp)$/i.test(name || '')
+  const isVideoFile = (name) => /\.(mp4|webm|mov|m4v)$/i.test(name || '')
 
   return (
     <main className="min-h-screen bg-white antialiased">
@@ -519,6 +520,12 @@ export default function SifarisDetail() {
                             <a href={msg.file_url} target="_blank" rel="noopener noreferrer">
                               <img src={msg.file_url} alt={msg.file_name} className="max-w-[220px] rounded-2xl mt-1 border border-gray-100" />
                             </a>
+                          ) : isVideoFile(msg.file_name) ? (
+                            <video
+                              src={msg.file_url}
+                              controls
+                              className="max-w-[260px] rounded-2xl mt-1 border border-gray-100"
+                            />
                           ) : (
                             <a
                               href={msg.file_url}
