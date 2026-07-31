@@ -39,6 +39,7 @@ export default function AdminPanel() {
   const [checking, setChecking] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
   const [activeTab, setActiveTab] = useState('users')
+  const [expandedUserId, setExpandedUserId] = useState(null)
 
   const [users, setUsers] = useState([])
   const [gigs, setGigs] = useState([])
@@ -170,32 +171,61 @@ export default function AdminPanel() {
             {activeTab === 'users' && (
               <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
                 <p className="text-sm text-gray-500 mb-5">Ümumi: {users.length} istifadəçi</p>
-                <div className="flex flex-col gap-3">
+                 <div className="flex flex-col gap-3">
                   {users.map((u) => (
-                    <div key={u.id} className="flex items-center justify-between border border-gray-100 rounded-2xl p-4">
-                      <div className="flex items-center gap-3">
-                        {u.avatar_url ? (
-                          <img src={u.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-purple-700 text-white flex items-center justify-center text-sm font-semibold">
-                            {(u.full_name || '?')[0]}
+                    <div key={u.id} className="border border-gray-100 rounded-2xl overflow-hidden">
+                      <div
+                        onClick={() => setExpandedUserId(expandedUserId === u.id ? null : u.id)}
+                        className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition"
+                      >
+                        <div className="flex items-center gap-3">
+                          {u.avatar_url ? (
+                            <img src={u.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-purple-700 text-white flex items-center justify-center text-sm font-semibold">
+                              {(u.full_name || '?')[0]}
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-medium text-gray-900 text-sm">{u.full_name}</p>
+                            <p className="text-xs text-gray-500">
+                              {u.role === 'freelancer' ? 'Freelancer' : 'Sifarişçi'} · Qoşulub: {formatDate(u.created_at)}
+                              {u.is_admin && ' · Admin'}
+                            </p>
                           </div>
-                        )}
-                        <div>
-                          <p className="font-medium text-gray-900 text-sm">{u.full_name}</p>
-                          <p className="text-xs text-gray-500">
-                            {u.role === 'freelancer' ? 'Freelancer' : 'Sifarişçi'} · Qoşulub: {formatDate(u.created_at)}
-                            {u.is_admin && ' · Admin'}
-                          </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-gray-400">{expandedUserId === u.id ? 'Bağla ▲' : 'Detallar ▼'}</span>
+                          {!u.is_admin && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeleteUser(u.id) }}
+                              className="text-sm text-red-500 hover:underline flex-shrink-0"
+                            >
+                              Sil
+                            </button>
+                          )}
                         </div>
                       </div>
-                      {!u.is_admin && (
-                        <button
-                          onClick={() => handleDeleteUser(u.id)}
-                          className="text-sm text-red-500 hover:underline flex-shrink-0"
-                        >
-                          Sil
-                        </button>
+
+                      {expandedUserId === u.id && u.role === 'freelancer' && (
+                        <div className="px-4 pb-4 pt-1 grid sm:grid-cols-2 gap-4 bg-gray-50/50 border-t border-gray-100">
+                          <div>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Telefon</p>
+                            <p className="text-sm text-gray-800">{u.phone || 'Qeyd olunmayıb'}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Təcrübə</p>
+                            <p className="text-sm text-gray-800">{u.experience_years || 'Qeyd olunmayıb'}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Sertifikatlar</p>
+                            <p className="text-sm text-gray-800">{u.certificates || 'Qeyd olunmayıb'}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Bank rekvizitləri</p>
+                            <p className="text-sm text-gray-800">{u.bank_requisites || 'Qeyd olunmayıb'}</p>
+                          </div>
+                        </div>
                       )}
                     </div>
                   ))}

@@ -60,6 +60,10 @@ export default function Profilim() {
   const [editSkills, setEditSkills] = useState('')
   const [editAbout, setEditAbout] = useState('')
   const [editEducation, setEditEducation] = useState('')
+  const [editPhone, setEditPhone] = useState('')
+  const [editExperience, setEditExperience] = useState('')
+  const [editCertificates, setEditCertificates] = useState('')
+  const [editRequisites, setEditRequisites] = useState('')
   const [savingProfile, setSavingProfile] = useState(false)
 
   const router = useRouter()
@@ -97,6 +101,10 @@ export default function Profilim() {
     setEditSkills(profileData?.skills || '')
     setEditAbout(profileData?.about || '')
     setEditEducation(profileData?.education || '')
+    setEditPhone(profileData?.phone || '')
+    setEditExperience(profileData?.experience_years || '')
+    setEditCertificates(profileData?.certificates || '')
+    setEditRequisites(profileData?.bank_requisites || '')
 
     if (profileData?.role === 'freelancer') {
       const { data: imagesData } = await supabase
@@ -242,7 +250,15 @@ export default function Profilim() {
 
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({ skills: editSkills, about: editAbout, education: editEducation })
+      .update({
+        skills: editSkills,
+        about: editAbout,
+        education: editEducation,
+        phone: editPhone,
+        experience_years: editExperience,
+        certificates: editCertificates,
+        bank_requisites: editRequisites,
+      })
       .eq('id', user.id)
 
     setSavingProfile(false)
@@ -409,6 +425,7 @@ const handleAddFaq = async (e) => {
             </div>
             <a href="/sevimliler" className="text-gray-500 hover:text-gray-900 transition-colors">Sevimlilər</a>
             <a href="/mesajlarim" className="text-gray-500 hover:text-gray-900 transition-colors">Mesajlarım</a>
+            <a href="/izlediklerim" className="text-gray-500 hover:text-gray-900 transition-colors">İzlədiklərim</a>
 
             <a href="/profilim" className="text-gray-900 font-medium">Profilim</a>
             <button onClick={handleSignOut} className="px-4 py-1.5 text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors">
@@ -689,6 +706,18 @@ const handleAddFaq = async (e) => {
                         <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Təhsil</h4>
                         <p className="text-gray-800 text-[15px]">{profile?.education || 'Qeyd olunmayıb'}</p>
                       </div>
+                      <div>
+                        <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Telefon</h4>
+                        <p className="text-gray-800 text-[15px]">{profile?.phone || 'Qeyd olunmayıb'}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Təcrübə</h4>
+                        <p className="text-gray-800 text-[15px]">{profile?.experience_years || 'Qeyd olunmayıb'}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Sertifikatlar</h4>
+                        <p className="text-gray-800 text-[15px]">{profile?.certificates || 'Qeyd olunmayıb'}</p>
+                      </div>
                     </div>
                   ) : (
                     <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
@@ -708,6 +737,33 @@ const handleAddFaq = async (e) => {
                         <input type="text" value={editEducation} onChange={(e) => setEditEducation(e.target.value)}
                           className="w-full mt-1.5 px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                           placeholder="Məs: Bakı Dövlət Universiteti, İnformatika (2020-2024)" />
+                      </div>
+                      <div>
+                        <label className="text-sm text-gray-600 font-medium">Telefon nömrəsi (istəyə bağlı)</label>
+                        <input type="text" value={editPhone} onChange={(e) => setEditPhone(e.target.value)}
+                          className="w-full mt-1.5 px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                          placeholder="+994 XX XXX XX XX" />
+                      </div>
+
+                      <div>
+                        <label className="text-sm text-gray-600 font-medium">Təcrübə (il)</label>
+                        <input type="text" value={editExperience} onChange={(e) => setEditExperience(e.target.value)}
+                          className="w-full mt-1.5 px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                          placeholder="Məs: 3 il" />
+                      </div>
+
+                      <div>
+                        <label className="text-sm text-gray-600 font-medium">Sertifikatlar (istəyə bağlı)</label>
+                        <textarea value={editCertificates} onChange={(e) => setEditCertificates(e.target.value)} rows={2}
+                          className="w-full mt-1.5 px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"
+                          placeholder="Sertifikatlarının siyahısı" />
+                      </div>
+
+                      <div>
+                        <label className="text-sm text-gray-600 font-medium">Bank rekvizitləri (istəyə bağlı, yalnız admin görür)</label>
+                        <textarea value={editRequisites} onChange={(e) => setEditRequisites(e.target.value)} rows={2}
+                          className="w-full mt-1.5 px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"
+                          placeholder="Ödəniş üçün bank hesab məlumatları" />
                       </div>
                       <div className="flex gap-3 mt-1">
                         <button type="submit" disabled={savingProfile}
