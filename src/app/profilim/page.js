@@ -437,6 +437,34 @@ const handleAddFaq = async (e) => {
       </header>
 
       <div className="max-w-5xl mx-auto px-6 py-10 w-full flex-1">
+         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <a href="/sevimliler" className="flex items-center gap-2 bg-white border border-gray-100 rounded-2xl px-4 py-3 hover:shadow-md transition">
+            <svg className="w-4 h-4 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span className="text-sm font-medium text-gray-700">Sevimlilər</span>
+          </a>
+          <a href="/mesajlarim" className="flex items-center gap-2 bg-white border border-gray-100 rounded-2xl px-4 py-3 hover:shadow-md transition">
+            <svg className="w-4 h-4 text-purple-700 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span className="text-sm font-medium text-gray-700">Mesajlarım</span>
+          </a>
+          <a href="/izlediklerim" className="flex items-center gap-2 bg-white border border-gray-100 rounded-2xl px-4 py-3 hover:shadow-md transition">
+            <svg className="w-4 h-4 text-blue-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 100-8 4 4 0 000 8zm6-1a4 4 0 10-2-7.46" />
+            </svg>
+            <span className="text-sm font-medium text-gray-700">İzlədiklərim</span>
+          </a>
+          {profile?.role === 'freelancer' && (
+            <a href="/xidmet-elave-et" className="flex items-center gap-2 bg-white border border-gray-100 rounded-2xl px-4 py-3 hover:shadow-md transition">
+              <svg className="w-4 h-4 text-green-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span className="text-sm font-medium text-gray-700">Xidmət əlavə et</span>
+            </a>
+          )}
+        </div>
         {/* Profil başlığı */}
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 mb-6">
           <div className="flex flex-wrap items-center gap-5 justify-between">
@@ -935,19 +963,40 @@ const handleAddFaq = async (e) => {
                 <h3 className="font-semibold text-gray-900 mb-6">Qazanc</h3>
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="bg-gray-50 rounded-2xl p-5">
-                    <p className="text-2xl font-semibold text-gray-900">0 AZN</p>
+                    <p className="text-2xl font-semibold text-gray-900">{stats.totalEarnings.toFixed(0)} AZN</p>
                     <p className="text-xs text-gray-500 mt-1">Ümumi qazanc</p>
                   </div>
                   <div className="bg-gray-50 rounded-2xl p-5">
-                    <p className="text-2xl font-semibold text-gray-900">0 AZN</p>
+                    <p className="text-2xl font-semibold text-gray-900">
+                      {myOrders.filter((o) => o.status === 'accepted' || o.status === 'delivered').reduce((sum, o) => sum + Number(o.price), 0).toFixed(0)} AZN
+                    </p>
                     <p className="text-xs text-gray-500 mt-1">Gözləyən ödəniş</p>
                   </div>
                 </div>
-                <div className="bg-gray-50 rounded-2xl py-12 text-center">
-                  <p className="text-gray-400 text-sm">
-                    Sifariş sistemi aktivləşəndə qazancların burada görünəcək
-                  </p>
-                </div>
+
+                {myOrders.filter((o) => o.status === 'completed').length === 0 ? (
+                  <div className="bg-gray-50 rounded-2xl py-12 text-center">
+                    <p className="text-gray-400 text-sm">
+                      Hələ tamamlanan sifarişiniz yoxdur
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Tamamlanan sifarişlər</p>
+                    <div className="flex flex-col gap-2">
+                      {myOrders.filter((o) => o.status === 'completed').map((order) => (
+                        <a
+                          key={order.id}
+                          href={'/sifaris/' + order.id}
+                          className="flex justify-between items-center border border-gray-100 rounded-xl px-4 py-3 hover:bg-gray-50 transition"
+                        >
+                          <span className="text-sm text-gray-700">{order.gig_title}</span>
+                          <span className="text-sm font-semibold text-purple-700">{order.price} AZN</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </>

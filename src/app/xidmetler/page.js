@@ -300,7 +300,7 @@ function XidmetlerContent() {
               <a href="/xidmetler" className="text-purple-700 text-sm font-medium hover:underline">Bütün xidmətlərə bax</a>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
               {gigs.filter((g) => !activeOnly || g.profiles?.availability === 'active').map((gig) => {
                 const freelancer = gig.profiles
                 const fInitials = (freelancer?.full_name || '?')
@@ -316,7 +316,7 @@ function XidmetlerContent() {
                     key={gig.id}
                     className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden block"
                   >
-                    <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
+                    <div className="aspect-[16/10] bg-gray-100 overflow-hidden">
                       {coverImage ? (
                         <img
                           src={coverImage}
@@ -329,16 +329,13 @@ function XidmetlerContent() {
                         </div>
                       )}
                     </div>
-                    <div className="p-6">
-                      <span className="inline-block px-3 py-1 bg-purple-50 text-purple-700 text-xs rounded-full font-medium mb-3">
+                    <div className="p-4">
+                      <span className="inline-block px-2.5 py-0.5 bg-purple-50 text-purple-700 text-[11px] rounded-full font-medium mb-2">
                         {gig.category}
                       </span>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2 leading-snug">
+                      <h3 className="text-sm font-semibold text-gray-900 mb-2 leading-snug line-clamp-2">
                         {gig.title}
                       </h3>
-                      <p className="text-gray-500 text-sm mb-5 line-clamp-3 leading-relaxed">
-                        {gig.description}
-                      </p>
 
                       {freelancer && (
                         <a
