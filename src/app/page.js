@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { useLanguage } from '../context/LanguageContext'
 import { useRouter } from 'next/navigation'
 
 const KATEQORIYALAR = [
@@ -58,6 +59,8 @@ export default function Home() {
   const [showNotifications, setShowNotifications] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const router = useRouter()
+  const { lang, changeLang, t } = useLanguage()
+  const [showLangMenu, setShowLangMenu] = useState(false)
 
   useScrollReveal()
 
@@ -135,8 +138,36 @@ export default function Home() {
             <img src="/frila.png" alt="Frila" className="h-10 w-auto" />
           </a>
           <nav className="flex gap-3 sm:gap-6 items-center text-sm sm:text-[15px] overflow-x-auto whitespace-nowrap">
+            <div className="relative flex-shrink-0">
+              <button
+                onClick={() => setShowLangMenu((prev) => !prev)}
+                className="flex items-center gap-1 px-2 py-1 rounded-full hover:bg-gray-100 transition text-sm font-medium text-gray-600"
+              >
+                {lang === 'az' ? '🇦🇿 AZ' : lang === 'en' ? '🇬🇧 EN' : '🇷🇺 RU'}
+              </button>
+              {showLangMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowLangMenu(false)} />
+                  <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 w-28">
+                    {[
+                      { code: 'az', label: '🇦🇿 AZ' },
+                      { code: 'en', label: '🇬🇧 EN' },
+                      { code: 'ru', label: '🇷🇺 RU' },
+                    ].map((l) => (
+                      <button
+                        key={l.code}
+                        onClick={() => { changeLang(l.code); setShowLangMenu(false) }}
+                        className={`w-full text-left px-3 py-2 text-sm hover:bg-gray-50 transition ${lang === l.code ? 'font-semibold text-purple-700' : 'text-gray-600'}`}
+                      >
+                        {l.label}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
             <a href="/xidmetler" className="text-gray-500 hover:text-gray-900 transition-colors">
-              Xidmətlər
+              {t('nav_services')}
             </a>
 
             
@@ -194,25 +225,27 @@ export default function Home() {
                 
 
                 <a href="/profilim" className="text-gray-500 hover:text-gray-900 transition-colors">
-                  Profilim
+                  {t('nav_profile')}
                 </a>
                 <button
                   onClick={handleSignOut}
                   className="px-4 py-1.5 text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors"
                 >
-                  Çıxış
+                  {t('nav_logout')}
                 </button>
               </>
             ) : (
               <>
                 <a href="/giris" className="text-gray-500 hover:text-gray-900 transition-colors">
                   Giriş
+                <a href="/giris" className="text-gray-500 hover:text-gray-900 transition-colors">
+                  {t('nav_login')}
                 </a>
-                <a
+                
                   href="/qeydiyyat"
                   className="px-4 py-1.5 bg-purple-700 text-white rounded-full hover:bg-purple-800 transition-colors"
-                >
-                  Qeydiyyat
+                
+                  {t('nav_signup')}
                 </a>
               </>
             )}
@@ -232,22 +265,21 @@ export default function Home() {
               className="pulse-badge animate-fade-up inline-block px-4 py-1.5 bg-purple-100 text-purple-700 rounded-full text-sm font-medium mb-6"
               style={{ animationDelay: '0s' }}
             >
-              🇦🇿 Azərbaycanın #1 freelance platforması
+              {t('hero_badge')}
             </span>
             <h1
               className="animate-fade-up text-4xl md:text-6xl font-semibold text-gray-900 tracking-tight leading-[1.1] mb-6"
               style={{ animationDelay: '0.1s' }}
             >
-              Ən yaxşı<br />
-              <span className="gradient-text">freelancerlərlə</span><br />
-              işini bağla
+              {t('hero_title_1')}<br />
+              <span className="gradient-text">{t('hero_title_2')}</span><br />
+              {t('hero_title_3')}
             </h1>
             <p
               className="animate-fade-up text-lg text-gray-500 mb-8 leading-relaxed max-w-lg"
               style={{ animationDelay: '0.2s' }}
             >
-              Dizayndan proqramlaşdırmaya, video montajdan marketinqə qədər —
-              minlərlə peşəkar bir kliklə əlində.
+              {t('hero_subtitle')}
             </p>
 
             <form
@@ -263,14 +295,14 @@ export default function Home() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Hansı xidməti axtarırsan?"
+                  placeholder={t('hero_search_placeholder')}
                   className="flex-1 px-3 py-2 bg-transparent outline-none text-gray-800 placeholder:text-gray-400 min-w-0"
                 />
                 <button
                   type="submit"
                   className="px-5 py-2 bg-purple-700 text-white rounded-full font-medium hover:bg-purple-800 transition-colors flex-shrink-0"
                 >
-                  Axtar
+                  {t('hero_search_btn')}
                 </button>
               </div>
             </form>
