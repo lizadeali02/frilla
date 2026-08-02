@@ -236,17 +236,21 @@ export default function Home() {
               </>
             ) : (
               <>
-                <a href="/giris" className="text-gray-500 hover:text-gray-900 transition-colors">
-                  Giriş
-                <a href="/giris" className="text-gray-500 hover:text-gray-900 transition-colors">
-                  {t('nav_login')}
-                </a>
-                
-                  href="/qeydiyyat"
-                  className="px-4 py-1.5 bg-purple-700 text-white rounded-full hover:bg-purple-800 transition-colors"
-                
-                  {t('nav_signup')}
-                </a>
+                <>
+  <a
+    href="/giris"
+    className="text-gray-500 hover:text-gray-900 transition-colors"
+  >
+    {t('nav_login')}
+  </a>
+
+  <a
+    href="/qeydiyyat"
+    className="px-4 py-1.5 bg-purple-700 text-white rounded-full hover:bg-purple-800 transition-colors"
+  >
+    {t('nav_signup')}
+  </a>
+</>
               </>
             )}
           </nav>
@@ -315,13 +319,13 @@ export default function Home() {
                 href="/xidmetler"
                 className="px-7 py-3 bg-purple-700 text-white rounded-full font-medium hover:bg-purple-800 transition-all hover:scale-[1.03] shadow-lg shadow-purple-200"
               >
-                Xidmət axtar
+                {t('hero_cta_search')}
               </a>
               <a
                 href="/qeydiyyat"
                 className="px-7 py-3 bg-white text-gray-900 rounded-full font-medium hover:bg-gray-50 transition-all hover:scale-[1.03] border border-gray-200"
               >
-                Freelancer ol
+                {t('hero_cta_freelancer')}
               </a>
             </div>
           </div>
