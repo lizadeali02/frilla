@@ -148,7 +148,7 @@ export default function Home() {
               {showLangMenu && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setShowLangMenu(false)} />
-                  <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 w-28">
+                  <div className="fixed top-16 left-4 sm:left-auto bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 w-28">
                     {[
                       { code: 'az', label: '🇦🇿 AZ' },
                       { code: 'en', label: '🇬🇧 EN' },
