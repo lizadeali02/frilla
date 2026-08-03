@@ -37,6 +37,7 @@ export default function Profilim() {
   const [myOrders, setMyOrders] = useState([])
   const [stats, setStats] = useState({ completedOrders: 0, totalEarnings: 0, avgRating: 0, reviewCount: 0 })
   const [updatingAvailability, setUpdatingAvailability] = useState(false)
+  const [showFrilaLinkTip, setShowFrilaLinkTip] = useState(true)
   const [faqs, setFaqs] = useState([])
   const [newQuestion, setNewQuestion] = useState('')
   const [newAnswer, setNewAnswer] = useState('')
@@ -564,6 +565,23 @@ const handleAddFaq = async (e) => {
                 </a>
               ))}
             </div>
+          </div>
+        )}
+
+         {profile?.role === 'freelancer' && showFrilaLinkTip && (
+          <div className="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-6 flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <span className="text-lg">💡</span>
+              <p className="text-sm text-purple-900">
+                Frila profilini sosial media hesablarına (Instagram, LinkedIn) əlavə etsən, daha çox müştəri sənə çata bilər.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowFrilaLinkTip(false)}
+              className="text-purple-400 hover:text-purple-600 flex-shrink-0"
+            >
+              ✕
+            </button>
           </div>
         )}
 
