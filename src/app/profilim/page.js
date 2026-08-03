@@ -9,7 +9,7 @@ const TABS = [
   { key: 'gigs', label: 'Xidmətlərim' },
   { key: 'orders', label: 'Sifarişlər' },
   { key: 'earnings', label: 'Qazanc' },
-  { key: 'partner', label: '🤝 Partner' },
+  { key: 'partner', label: ' Partner' },
 ]
 
 const KATEQORIYALAR = [
