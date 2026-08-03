@@ -9,6 +9,7 @@ const TABS = [
   { key: 'gigs', label: 'Xidmətlərim' },
   { key: 'orders', label: 'Sifarişlər' },
   { key: 'earnings', label: 'Qazanc' },
+  { key: 'partner', label: '🤝 Partner' },
 ]
 
 const KATEQORIYALAR = [
@@ -37,6 +38,8 @@ export default function Profilim() {
   const [myOrders, setMyOrders] = useState([])
   const [stats, setStats] = useState({ completedOrders: 0, totalEarnings: 0, avgRating: 0, reviewCount: 0 })
   const [updatingAvailability, setUpdatingAvailability] = useState(false)
+  const [creatorSocialLink, setCreatorSocialLink] = useState('')
+  const [applyingCreator, setApplyingCreator] = useState(false)
   const [showFrilaLinkTip, setShowFrilaLinkTip] = useState(true)
   const [faqs, setFaqs] = useState([])
   const [newQuestion, setNewQuestion] = useState('')
@@ -184,6 +187,18 @@ export default function Profilim() {
     await supabase.from('profiles').update({ availability: value }).eq('id', user.id)
     setProfile((prev) => ({ ...prev, availability: value }))
     setUpdatingAvailability(false)
+  }
+
+  const handleCreatorApply = async (e) => {
+    e.preventDefault()
+    if (!creatorSocialLink.trim()) return
+    setApplyingCreator(true)
+    await supabase.from('profiles').update({
+      creator_status: 'pending',
+      creator_social_link: creatorSocialLink.trim(),
+    }).eq('id', user.id)
+    setProfile((prev) => ({ ...prev, creator_status: 'pending', creator_social_link: creatorSocialLink.trim() }))
+    setApplyingCreator(false)
   }
 
   const handleAvatarUpload = async (e) => {
@@ -974,6 +989,8 @@ const handleAddFaq = async (e) => {
               </div>
             )}
 
+            
+
             {activeTab === 'earnings' && (
               <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
                 <h3 className="font-semibold text-gray-900 mb-6">Qazanc</h3>
@@ -989,6 +1006,76 @@ const handleAddFaq = async (e) => {
                     <p className="text-xs text-gray-500 mt-1">Gözləyən ödəniş</p>
                   </div>
                 </div>
+                
+                 {activeTab === 'partner' && (
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
+                {profile?.creator_status === 'approved' ? (
+                  <div className="text-center py-6">
+                    <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-3xl">🏅</span>
+                    </div>
+                    <h3 className="font-semibold text-gray-900 text-lg mb-1">Sən artıq Frila Creator-san!</h3>
+                    <p className="text-gray-500 text-sm">Profilində Creator nişanı görünür.</p>
+                  </div>
+                ) : profile?.creator_status === 'pending' ? (
+                  <div className="text-center py-6">
+                    <div className="w-16 h-16 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-3xl">⏳</span>
+                    </div>
+                    <h3 className="font-semibold text-gray-900 text-lg mb-1">Müraciətin nəzərdən keçirilir</h3>
+                    <p className="text-gray-500 text-sm">Tezliklə sənə geri dönüş olacaq.</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-center mb-8">
+                      <h3 className="font-semibold text-gray-900 text-xl mb-2">🏅 Frila Creator ol</h3>
+                      <p className="text-gray-500 text-sm">Frila-nı tanıt, xüsusi imtiyazlar qazan</p>
+                    </div>
+
+                    <div className="flex flex-col gap-4 mb-8">
+                      <div className="flex items-start gap-3">
+                        <span className="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-semibold flex-shrink-0">1</span>
+                        <p className="text-sm text-gray-700 pt-1">📌 Frila profil linkini bio-na əlavə et</p>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-semibold flex-shrink-0">2</span>
+                        <p className="text-sm text-gray-700 pt-1">📢 Frila haqqında ən azı 1 paylaşım et</p>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="w-7 h-7 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center text-xs font-semibold flex-shrink-0">3</span>
+                        <p className="text-sm text-gray-700 pt-1">🔗 Sosial media profil linkini göndər</p>
+                      </div>
+                    </div>
+
+                    <form onSubmit={handleCreatorApply} className="flex flex-col gap-3 mb-8">
+                      <input
+                        type="text"
+                        required
+                        value={creatorSocialLink}
+                        onChange={(e) => setCreatorSocialLink(e.target.value)}
+                        placeholder="Instagram / LinkedIn / TikTok profil linki"
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-sm"
+                      />
+                      <button
+                        type="submit"
+                        disabled={applyingCreator}
+                        className="bg-purple-700 text-white py-2.5 rounded-xl font-medium hover:bg-purple-800 transition-all disabled:opacity-50"
+                      >
+                        {applyingCreator ? 'Göndərilir...' : 'Müraciət et'}
+                      </button>
+                    </form>
+
+                    <div className="flex flex-col gap-2 pt-6 border-t border-gray-100">
+                      <p className="text-sm text-gray-600 flex items-center gap-2">✔ Profilində xüsusi Creator nişanı görünəcək</p>
+                      <p className="text-sm text-gray-600 flex items-center gap-2">✔ Axtarış nəticələrində daha çox görünəcəksən</p>
+                      <p className="text-sm text-gray-600 flex items-center gap-2">✔ Daha çox müştərinin diqqətini çəkəcəksən</p>
+                    </div>
+                  </>
+                )}
+              </div>
+               )}
+            
+                
 
                 {myOrders.filter((o) => o.status === 'completed').length === 0 ? (
                   <div className="bg-gray-50 rounded-2xl py-12 text-center">
@@ -1018,6 +1105,9 @@ const handleAddFaq = async (e) => {
           </>
         )}
       </div>
+    
+
+      
 
       {/* Footer */}
       <footer className="border-t border-gray-100 bg-gray-50/50 mt-10">
