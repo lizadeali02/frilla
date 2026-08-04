@@ -1006,8 +1006,34 @@ const handleAddFaq = async (e) => {
                     <p className="text-xs text-gray-500 mt-1">Gözləyən ödəniş</p>
                   </div>
                 </div>
-                
-                 {activeTab === 'partner' && (
+
+                {myOrders.filter((o) => o.status === 'completed').length === 0 ? (
+                  <div className="bg-gray-50 rounded-2xl py-12 text-center">
+                    <p className="text-gray-400 text-sm">
+                      Hələ tamamlanan sifarişiniz yoxdur
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Tamamlanan sifarişlər</p>
+                    <div className="flex flex-col gap-2">
+                      {myOrders.filter((o) => o.status === 'completed').map((order) => (
+                        <a
+                          key={order.id}
+                          href={'/sifaris/' + order.id}
+                          className="flex justify-between items-center border border-gray-100 rounded-xl px-4 py-3 hover:bg-gray-50 transition"
+                        >
+                          <span className="text-sm text-gray-700">{order.gig_title}</span>
+                          <span className="text-sm font-semibold text-purple-700">{order.price} AZN</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'partner' && (
               <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
                 {profile?.creator_status === 'approved' ? (
                   <div className="text-center py-6">
@@ -1073,49 +1099,16 @@ const handleAddFaq = async (e) => {
                   </>
                 )}
               </div>
-               )}
-            
-                
-
-                {myOrders.filter((o) => o.status === 'completed').length === 0 ? (
-                  <div className="bg-gray-50 rounded-2xl py-12 text-center">
-                    <p className="text-gray-400 text-sm">
-                      Hələ tamamlanan sifarişiniz yoxdur
-                    </p>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Tamamlanan sifarişlər</p>
-                    <div className="flex flex-col gap-2">
-                      {myOrders.filter((o) => o.status === 'completed').map((order) => (
-                        <a
-                          key={order.id}
-                          href={'/sifaris/' + order.id}
-                          className="flex justify-between items-center border border-gray-100 rounded-xl px-4 py-3 hover:bg-gray-50 transition"
-                        >
-                          <span className="text-sm text-gray-700">{order.gig_title}</span>
-                          <span className="text-sm font-semibold text-purple-700">{order.price} AZN</span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
             )}
           </>
         )}
       </div>
-    
-
-      
 
       {/* Footer */}
       <footer className="border-t border-gray-100 bg-gray-50/50 mt-10">
         <div className="max-w-6xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
           <div className="col-span-2 md:col-span-1">
-           <a href="/" className="flex items-center">
-            <img src="/frila.png" alt="Frila" className="h-10 w-auto" />
-          </a>
+            <a href="/" className="text-xl font-semibold text-gray-900 tracking-tight">Frila</a>
             <p className="text-gray-500 text-sm mt-3 leading-relaxed">
               Azərbaycanın freelance platforması
             </p>
@@ -1147,10 +1140,8 @@ const handleAddFaq = async (e) => {
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-100 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-6xl mx-auto px-6">
-          <p className="text-sm text-gray-400">
-            © 2026 Frila. Bütün hüquqlar qorunur.
-          </p>
+        <div className="border-t border-gray-100 py-6">
+          <p className="text-center text-sm text-gray-400">© 2026 Frila. Bütün hüquqlar qorunur.</p>
           <div className="flex items-center gap-4">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-purple-700 transition-colors">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">

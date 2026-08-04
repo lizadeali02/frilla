@@ -225,6 +225,29 @@ export default function AdminPanel() {
                             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Bank rekvizitləri</p>
                             <p className="text-sm text-gray-800">{u.bank_requisites || 'Qeyd olunmayıb'}</p>
                           </div>
+                          {u.creator_status === 'pending' && (
+                            <div className="sm:col-span-2 bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center justify-between gap-3">
+                              <div>
+                                <p className="text-sm font-medium text-amber-900">🏅 Creator müraciəti gözləyir</p>
+                                <a href={u.creator_social_link} target="_blank" rel="noopener noreferrer" className="text-xs text-amber-700 hover:underline break-all">
+                                  {u.creator_social_link}
+                                </a>
+                              </div>
+                              <button
+                                onClick={async (e) => {
+                                  e.stopPropagation()
+                                  await supabase.from('profiles').update({ creator_status: 'approved', is_creator: true }).eq('id', u.id)
+                                  loadAllData()
+                                }}
+                                className="px-3 py-1.5 bg-amber-600 text-white rounded-full text-xs font-medium hover:bg-amber-700 transition flex-shrink-0"
+                              >
+                                Təsdiqlə
+                              </button>
+                            </div>
+                          )}
+                          {u.creator_status === 'approved' && (
+                            <div className="sm:col-span-2 text-xs text-green-700 font-medium">✓ Frila Creator</div>
+                          )}
                         </div>
                       )}
                     </div>
