@@ -198,6 +198,19 @@ export default function Profilim() {
       creator_social_link: creatorSocialLink.trim(),
     }).eq('id', user.id)
     setProfile((prev) => ({ ...prev, creator_status: 'pending', creator_social_link: creatorSocialLink.trim() }))
+
+    const { data: admins } = await supabase.from('profiles').select('id').eq('is_admin', true)
+    if (admins) {
+      const notifRows = admins.map((a) => ({
+        user_id: a.id,
+        type: 'creator_application',
+        title: 'Yeni Partner müraciəti',
+        message: `${profile?.full_name} Frila Creator olmaq üçün müraciət etdi`,
+        link: '/admin',
+      }))
+      await supabase.from('notifications').insert(notifRows)
+    }
+
     setApplyingCreator(false)
   }
 
@@ -583,22 +596,7 @@ const handleAddFaq = async (e) => {
           </div>
         )}
 
-         {profile?.role === 'freelancer' && showFrilaLinkTip && (
-          <div className="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-6 flex items-start justify-between gap-3">
-            <div className="flex items-start gap-3">
-              <span className="text-lg">💡</span>
-              <p className="text-sm text-purple-900">
-                Frila profilini sosial media hesablarına (Instagram, LinkedIn) əlavə etsən, daha çox müştəri sənə çata bilər.
-              </p>
-            </div>
-            <button
-              onClick={() => setShowFrilaLinkTip(false)}
-              className="text-purple-400 hover:text-purple-600 flex-shrink-0"
-            >
-              ✕
-            </button>
-          </div>
-        )}
+         
 
         {/* Sifarişçi üçün: Freelancer olmaq seçimi */}
         {profile?.role === 'customer' && (
