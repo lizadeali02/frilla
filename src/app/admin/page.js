@@ -40,6 +40,8 @@ export default function AdminPanel() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [activeTab, setActiveTab] = useState('users')
   const [expandedUserId, setExpandedUserId] = useState(null)
+  const [notifications, setNotifications] = useState([])
+  const [showNotifications, setShowNotifications] = useState(false)
 
   const [users, setUsers] = useState([])
   const [gigs, setGigs] = useState([])
@@ -74,6 +76,7 @@ export default function AdminPanel() {
     setIsAdmin(true)
     setChecking(false)
     loadAllData()
+    loadNotifications(user.id)
   }
 
   const loadAllData = async () => {
@@ -98,6 +101,20 @@ export default function AdminPanel() {
     setOrders(ordersData || [])
 
     setLoadingData(false)
+  }
+  const loadNotifications = async (userId) => {
+    const { data } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(20)
+    setNotifications(data || [])
+  }
+
+  const markAsRead = async (notifId) => {
+    await supabase.from('notifications').update({ read: true }).eq('id', notifId)
+    setNotifications((prev) => prev.map((n) => n.id === notifId ? { ...n, read: true } : n))
   }
 
   const handleDeleteUser = async (userId) => {
