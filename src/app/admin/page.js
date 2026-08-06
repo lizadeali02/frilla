@@ -158,6 +158,54 @@ export default function AdminPanel() {
                     <nav className="flex gap-3 sm:gap-6 items-center text-sm sm:text-[15px] overflow-x-auto whitespace-nowrap">
 
             <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">ADMIN</span>
+
+            <div className="relative">
+              <button
+                onClick={() => setShowNotifications((prev) => !prev)}
+                className="relative p-2 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                {notifications.filter((n) => !n.read).length > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-semibold">
+                    {notifications.filter((n) => !n.read).length > 9 ? '9+' : notifications.filter((n) => !n.read).length}
+                  </span>
+                )}
+              </button>
+
+              {showNotifications && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
+                  <div className="fixed top-16 right-4 left-4 sm:left-auto sm:right-6 sm:w-80 bg-white rounded-2xl border border-gray-200 shadow-xl z-50 max-h-[70vh] overflow-y-auto">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <h3 className="font-semibold text-gray-900 text-sm">Admin bildirişləri</h3>
+                    </div>
+                    {notifications.length === 0 ? (
+                      <p className="text-gray-400 text-sm text-center py-8">Bildiriş yoxdur</p>
+                    ) : (
+                      notifications.map((n) => (
+                        <a
+                          key={n.id}
+                          href={n.link || '#'}
+                          onClick={() => markAsRead(n.id)}
+                          className={`block px-4 py-3 border-b border-gray-50 hover:bg-gray-50 transition ${!n.read ? 'bg-purple-50/50' : ''}`}
+                        >
+                          <div className="flex items-start gap-2">
+                            {!n.read && <span className="w-2 h-2 bg-purple-600 rounded-full mt-1.5 flex-shrink-0" />}
+                            <div className={!n.read ? '' : 'ml-4'}>
+                              <p className="text-sm font-medium text-gray-900">{n.title}</p>
+                              {n.message && <p className="text-xs text-gray-500 mt-0.5">{n.message}</p>}
+                            </div>
+                          </div>
+                        </a>
+                      ))
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+
             <a href="/xidmetler" className="text-gray-500 hover:text-gray-900 transition-colors">Xidmətlər</a>
             <a href="/profilim" className="text-gray-500 hover:text-gray-900 transition-colors">Profilim</a>
           </nav>
