@@ -40,6 +40,9 @@ export default function Profilim() {
   const [updatingAvailability, setUpdatingAvailability] = useState(false)
   const [creatorSocialLink, setCreatorSocialLink] = useState('')
   const [applyingCreator, setApplyingCreator] = useState(false)
+  const [certificates, setCertificates] = useState([])
+  const [uploadingCert, setUploadingCert] = useState(false)
+  const [uploadingCv, setUploadingCv] = useState(false)
   const [showFrilaLinkTip, setShowFrilaLinkTip] = useState(true)
   const [faqs, setFaqs] = useState([])
   const [newQuestion, setNewQuestion] = useState('')
@@ -130,6 +133,12 @@ export default function Profilim() {
         .eq('freelancer_id', user.id)
         .order('sort_order', { ascending: true })
       setFaqs(faqsData || [])
+      const { data: certsData } = await supabase
+        .from('freelancer_certificates')
+        .select('*')
+        .eq('freelancer_id', user.id)
+        .order('created_at', { ascending: false })
+      setCertificates(certsData || [])
 
       const { data: ordersData } = await supabase
         .from('orders')
@@ -188,6 +197,63 @@ export default function Profilim() {
     setProfile((prev) => ({ ...prev, availability: value }))
     setUpdatingAvailability(false)
   }
+
+    const handleCertUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setUploadingCert(true)
+    setError('')
+
+    const fileExt = file.name.split('.').pop()
+    const filePath = `${user.id}/certs/${Date.now()}.${fileExt}`
+
+    const { error: uploadError } = await supabase.storage.from('freelancer-files').upload(filePath, file)
+    if (uploadError) {
+      setUploadingCert(false)
+      setError('Fayl yüklənərkən xəta: ' + uploadError.message)
+      return
+    }
+
+    const { data: urlData } = supabase.storage.from('freelancer-files').getPublicUrl(filePath)
+
+    await supabase.from('freelancer_certificates').insert({
+      freelancer_id: user.id,
+      file_url: urlData.publicUrl,
+      file_name: file.name,
+    })
+
+    setUploadingCert(false)
+    loadData()
+  }
+
+  const handleDeleteCert = async (certId) => {
+    await supabase.from('freelancer_certificates').delete().eq('id', certId)
+    loadData()
+  }
+
+  const handleCvUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setUploadingCv(true)
+    setError('')
+
+    const fileExt = file.name.split('.').pop()
+    const filePath = `${user.id}/cv.${fileExt}`
+
+    const { error: uploadError } = await supabase.storage.from('freelancer-files').upload(filePath, file, { upsert: true })
+    if (uploadError) {
+      setUploadingCv(false)
+      setError('CV yüklənərkən xəta: ' + uploadError.message)
+      return
+    }
+
+    const { data: urlData } = supabase.storage.from('freelancer-files').getPublicUrl(filePath)
+    await supabase.from('profiles').update({ cv_url: urlData.publicUrl }).eq('id', user.id)
+    setProfile((prev) => ({ ...prev, cv_url: urlData.publicUrl }))
+
+    setUploadingCv(false)
+  }
+
 
   const handleCreatorApply = async (e) => {
     e.preventDefault()
