@@ -975,6 +975,42 @@ const handleAddFaq = async (e) => {
                         </div>
                       ))}
                     </div>
+                   )}
+                </div>
+
+                <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
+                  <h3 className="font-semibold text-gray-900 mb-1">CV və Sertifikatlar</h3>
+                  <p className="text-gray-500 text-sm mb-5">CV yalnız admin tərəfindən görünür. Sertifikatlar ictimai profilində göstərilir.</p>
+
+                  <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                    <label className="flex-1">
+                      <span className="block px-4 py-3 bg-gray-50 border border-dashed border-gray-300 rounded-2xl text-center text-sm font-medium text-gray-600 cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 transition">
+                        {uploadingCv ? 'Yüklənir...' : profile?.cv_url ? '📄 CV yükləndi (dəyişmək üçün klikləyin)' : '📄 CV yüklə (PDF)'}
+                      </span>
+                      <input type="file" accept=".pdf" onChange={handleCvUpload} disabled={uploadingCv} className="hidden" />
+                    </label>
+
+                    <label className="flex-1">
+                      <span className="block px-4 py-3 bg-gray-50 border border-dashed border-gray-300 rounded-2xl text-center text-sm font-medium text-gray-600 cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 transition">
+                        {uploadingCert ? 'Yüklənir...' : '🏆 Sertifikat əlavə et (PDF/şəkil)'}
+                      </span>
+                      <input type="file" accept=".pdf,image/*" onChange={handleCertUpload} disabled={uploadingCert} className="hidden" />
+                    </label>
+                  </div>
+
+                  {certificates.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      {certificates.map((cert) => (
+                        <div key={cert.id} className="flex items-center justify-between border border-gray-100 rounded-xl px-4 py-2.5">
+                          <a href={cert.file_url} target="_blank" rel="noopener noreferrer" className="text-sm text-purple-700 hover:underline truncate">
+                            🏆 {cert.file_name}
+                          </a>
+                          <button onClick={() => handleDeleteCert(cert.id)} className="text-xs text-red-500 hover:underline flex-shrink-0 ml-3">
+                            Sil
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
