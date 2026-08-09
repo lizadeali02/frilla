@@ -71,6 +71,10 @@ export default function SifarisDetail() {
   const [reviewRating, setReviewRating] = useState(5)
   const [reviewComment, setReviewComment] = useState('')
   const [submittingReview, setSubmittingReview] = useState(false)
+  const [dispute, setDispute] = useState(null)
+  const [showDisputeForm, setShowDisputeForm] = useState(false)
+  const [disputeReason, setDisputeReason] = useState('')
+  const [submittingDispute, setSubmittingDispute] = useState(false)
 
   const params = useParams()
   const router = useRouter()
@@ -118,6 +122,12 @@ export default function SifarisDetail() {
 
     const { data: sellerData } = await supabase.from('profiles').select('*').eq('id', orderData.seller_id).single()
     setSeller(sellerData)
+    const { data: disputeData } = await supabase
+      .from('order_disputes')
+      .select('*')
+      .eq('order_id', orderData.id)
+      .maybeSingle()
+    setDispute(disputeData)
 
     if (orderData.status === 'completed' && orderData.buyer_id === user.id) {
       const { data: reviewData } = await supabase
@@ -138,6 +148,37 @@ export default function SifarisDetail() {
       .eq('order_id', params.id)
       .order('created_at', { ascending: true })
     setMessages(data || [])
+  }
+
+  const submitDispute = async (e) => {
+    e.preventDefault()
+    if (!disputeReason.trim()) return
+    setSubmittingDispute(true)
+
+    const { error: insertError } = await supabase.from('order_disputes').insert({
+      order_id: order.id,
+      opened_by: user.id,
+      reason: disputeReason.trim(),
+    })
+
+    if (!insertError) {
+      const { data: admins } = await supabase.from('profiles').select('id').eq('is_admin', true)
+      if (admins) {
+        const notifRows = admins.map((a) => ({
+          user_id: a.id,
+          type: 'dispute',
+          title: 'Yeni mübahisə açıldı',
+          message: `Sifariş #${order.id.slice(0, 8)} üçün problem bildirildi`,
+          link: '/admin',
+        }))
+        await supabase.from('notifications').insert(notifRows)
+      }
+      setShowDisputeForm(false)
+      setDisputeReason('')
+      loadOrder()
+    }
+
+    setSubmittingDispute(false)
   }
 
   const updateStatus = async (status) => {
