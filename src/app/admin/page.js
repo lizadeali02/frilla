@@ -8,6 +8,7 @@ const TABS = [
   { key: 'users', label: 'İstifadəçilər' },
   { key: 'gigs', label: 'Xidmətlər' },
   { key: 'orders', label: 'Sifarişlər' },
+  { key: 'disputes', label: 'Mübahisələr' },
 ]
 
 const STATUS_LABELS = {
@@ -46,6 +47,7 @@ export default function AdminPanel() {
   const [users, setUsers] = useState([])
   const [gigs, setGigs] = useState([])
   const [orders, setOrders] = useState([])
+  const [disputes, setDisputes] = useState([])
   const [loadingData, setLoadingData] = useState(true)
 
   const router = useRouter()
@@ -99,6 +101,12 @@ export default function AdminPanel() {
       .select('*')
       .order('created_at', { ascending: false })
     setOrders(ordersData || [])
+
+    const { data: disputesData } = await supabase
+      .from('order_disputes')
+      .select('*, orders(gig_title, price)')
+      .order('created_at', { ascending: false })
+    setDisputes(disputesData || [])
 
     setLoadingData(false)
   }
