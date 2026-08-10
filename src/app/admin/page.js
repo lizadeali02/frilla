@@ -382,6 +382,61 @@ export default function AdminPanel() {
                 </div>
               </div>
             )}
+             {activeTab === 'disputes' && (
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
+                <p className="text-sm text-gray-500 mb-5">Ümumi: {disputes.length} mübahisə</p>
+                {disputes.length === 0 ? (
+                  <p className="text-gray-400 text-sm text-center py-8">Hələ heç bir mübahisə yoxdur</p>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    {disputes.map((d) => (
+                      <div key={d.id} className="border border-gray-100 rounded-2xl p-4">
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                          <div>
+                            <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium mb-1.5 ${
+                              d.status === 'open' ? 'bg-amber-100 text-amber-700' :
+                              d.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                            }`}>
+                              {d.status === 'open' ? 'Açıq' : d.status === 'resolved' ? 'Həll edilib' : 'Rədd edilib'}
+                            </span>
+                            <h4 className="font-medium text-gray-900">{d.orders?.gig_title}</h4>
+                            <p className="text-sm text-gray-600 mt-1">{d.reason}</p>
+                          </div>
+                          <a href={'/admin/sifaris/' + d.order_id} className="text-xs text-purple-700 hover:underline flex-shrink-0">
+                            Sifarişə bax
+                          </a>
+                        </div>
+
+                        {d.status === 'open' && (
+                          <div className="flex gap-2 mt-3 pt-3 border-t border-gray-100">
+                            <button
+                              onClick={async () => {
+                                const note = prompt('Admin qeydi (istəyə bağlı):') || ''
+                                await supabase.from('order_disputes').update({ status: 'resolved', admin_note: note, resolved_at: new Date().toISOString() }).eq('id', d.id)
+                                loadAllData()
+                              }}
+                              className="px-3 py-1.5 bg-green-600 text-white rounded-full text-xs font-medium hover:bg-green-700 transition"
+                            >
+                              Həll edildi
+                            </button>
+                            <button
+                              onClick={async () => {
+                                const note = prompt('Rədd səbəbi (istəyə bağlı):') || ''
+                                await supabase.from('order_disputes').update({ status: 'rejected', admin_note: note, resolved_at: new Date().toISOString() }).eq('id', d.id)
+                                loadAllData()
+                              }}
+                              className="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-full text-xs font-medium hover:bg-gray-50 transition"
+                            >
+                              Rədd et
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>
