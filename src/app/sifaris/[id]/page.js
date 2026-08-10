@@ -515,8 +515,65 @@ export default function SifarisDetail() {
                     ⭐ Rəy bildir
                   </button>
                 )}
-              </div>
+               </div>
             )}
+
+            {/* Case / Mübahisə */}
+            <div className="pt-5 mt-5 border-t border-gray-100">
+              {dispute ? (
+                <div className={`rounded-2xl p-4 border ${
+                  dispute.status === 'open' ? 'bg-amber-50 border-amber-200' :
+                  dispute.status === 'resolved' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+                }`}>
+                  <p className={`text-sm font-medium ${
+                    dispute.status === 'open' ? 'text-amber-800' :
+                    dispute.status === 'resolved' ? 'text-green-800' : 'text-red-800'
+                  }`}>
+                    {dispute.status === 'open' ? '⏳ Case açılıb, baxılır' :
+                     dispute.status === 'resolved' ? '✓ Case həll edilib' : '✕ Case rədd edilib'}
+                  </p>
+                  <p className="text-xs text-gray-600 mt-1">{dispute.reason}</p>
+                  {dispute.admin_note && (
+                    <p className="text-xs text-gray-500 mt-2 italic">Admin qeydi: {dispute.admin_note}</p>
+                  )}
+                </div>
+              ) : !isCancelled && order.status !== 'completed' && (showDisputeForm ? (
+                <form onSubmit={submitDispute}>
+                  <p className="text-sm font-medium text-gray-900 mb-2">Problem barədə bildir</p>
+                  <textarea
+                    value={disputeReason}
+                    onChange={(e) => setDisputeReason(e.target.value)}
+                    rows={3}
+                    required
+                    className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent transition resize-none mb-3"
+                    placeholder="Problemi ətraflı izah edin"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      disabled={submittingDispute}
+                      className="px-4 py-2 bg-red-600 text-white rounded-xl text-sm font-medium hover:bg-red-700 transition disabled:opacity-50"
+                    >
+                      {submittingDispute ? 'Göndərilir...' : 'Case-i göndər'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowDisputeForm(false)}
+                      className="px-4 py-2 border border-gray-200 text-gray-600 rounded-xl text-sm hover:bg-gray-50 transition"
+                    >
+                      Ləğv et
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <button
+                  onClick={() => setShowDisputeForm(true)}
+                  className="text-sm text-red-500 hover:underline"
+                >
+                  ⚠ Problem var, case aç
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
