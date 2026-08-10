@@ -106,7 +106,7 @@ export default function AdminPanel() {
       .from('order_disputes')
       .select('*, orders(gig_title, price)')
       .order('created_at', { ascending: false })
-    setDisputes(disputesData || []) . 
+    setDisputes(disputesData || []) 
 
     setLoadingData(false)
   }
