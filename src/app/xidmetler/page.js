@@ -10,11 +10,130 @@ const SIRALAMA = [
   { key: 'price_desc', label: 'Qiymət: yuxarıdan aşağı' },
 ]
 
+function GigCard({ gig, isLiked, onToggleLike }) {
+  const [hoverIndex, setHoverIndex] = useState(0)
+  const [hovering, setHovering] = useState(false)
+
+  const freelancer = gig.profiles
+  const fInitials = (freelancer?.full_name || '?')
+    .split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
+
+  const images = gig.gig_images && gig.gig_images.length > 0
+    ? [...gig.gig_images].sort((a, b) => a.sort_order - b.sort_order)
+    : []
+  const currentImage = images.length > 0 ? images[hoverIndex % images.length]?.image_url : null
+
+  const handleMouseMove = (e) => {
+    if (images.length <= 1) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const segment = Math.floor((x / rect.width) * images.length)
+    setHoverIndex(Math.min(Math.max(segment, 0), images.length - 1))
+  }
+
+  return (
+    <a
+      href={'/gig/' + gig.id}
+      className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden block"
+    >
+      <div
+        className="relative aspect-[4/3] bg-gray-100 overflow-hidden"
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => { setHovering(false); setHoverIndex(0) }}
+        onMouseMove={handleMouseMove}
+      >
+        {currentImage ? (
+          <img
+            src={currentImage}
+            alt={gig.title}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100">
+            <span className="text-purple-300 text-xs font-medium">Şəkil yoxdur</span>
+          </div>
+        )}
+
+        {/* Bəyən düyməsi */}
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleLike(gig.id) }}
+          className="absolute top-2 right-2 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm hover:scale-110 transition-transform z-10"
+        >
+          <svg
+            className={`w-4 h-4 ${isLiked ? 'text-red-500' : 'text-gray-400'}`}
+            fill={isLiked ? 'currentColor' : 'none'}
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        </button>
+
+        {/* Şəkil sürüşdürmə göstəricisi */}
+        {hovering && images.length > 1 && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+            {images.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1 rounded-full transition-all ${i === hoverIndex ? 'w-4 bg-white' : 'w-1 bg-white/50'}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="p-3">
+        {freelancer && (
+          <div
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.location.href = '/freelancer/' + freelancer.id }}
+            className="flex items-center gap-2 mb-2"
+          >
+            {freelancer.avatar_url ? (
+              <img src={freelancer.avatar_url} alt="" className="w-6 h-6 rounded-full object-cover flex-shrink-0" />
+            ) : (
+              <div className="w-6 h-6 rounded-full bg-purple-700 text-white flex items-center justify-center text-[10px] font-semibold flex-shrink-0">
+                {fInitials}
+              </div>
+            )}
+            <span className="text-xs text-gray-600 font-medium truncate flex-1">{freelancer.full_name}</span>
+            {freelancer.availability && (
+              <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                freelancer.availability === 'active' ? 'bg-green-500' :
+                freelancer.availability === 'busy' ? 'bg-amber-500' : 'bg-red-500'
+              }`} />
+            )}
+          </div>
+        )}
+
+        <h3 className="text-sm text-gray-800 mb-2 leading-snug line-clamp-2">
+          {gig.title}
+        </h3>
+
+        <div className="flex items-center gap-1 mb-2">
+          <svg className="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.446a1 1 0 00-.363 1.118l1.287 3.958c.3.922-.755 1.688-1.539 1.118l-3.368-2.446a1 1 0 00-1.176 0l-3.368 2.446c-.784.57-1.838-.196-1.539-1.118l1.287-3.958a1 1 0 00-.363-1.118L2.063 9.385c-.783-.57-.38-1.81.588-1.81h4.162a1 1 0 00.95-.69l1.286-3.958z" />
+          </svg>
+          <span className="text-xs font-semibold text-gray-800">Yeni</span>
+        </div>
+
+        <div className="flex justify-between items-center pt-2 border-t border-gray-100">
+          <span className="text-[11px] text-gray-400">Başlanğıc</span>
+          <span className="text-sm font-semibold text-gray-900">
+            {gig.price} AZN
+          </span>
+        </div>
+      </div>
+    </a>
+  )
+}
+
 function XidmetlerContent() {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loadingUser, setLoadingUser] = useState(true)
   const [gigs, setGigs] = useState([])
+  const [likedGigIds, setLikedGigIds] = useState(new Set())
   const [loading, setLoading] = useState(true)
   const [searchInput, setSearchInput] = useState('')
   const [activeCategory, setActiveCategory] = useState('')
@@ -71,6 +190,7 @@ function XidmetlerContent() {
     if (user) {
       setUser(user)
       loadNotifications(user.id)
+      loadLikes(user.id)
       const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
@@ -79,6 +199,29 @@ function XidmetlerContent() {
       setProfile(profileData)
     }
     setLoadingUser(false)
+  }
+
+  const loadLikes = async (userId) => {
+    const { data } = await supabase.from('gig_likes').select('gig_id').eq('user_id', userId)
+    setLikedGigIds(new Set((data || []).map((l) => l.gig_id)))
+  }
+
+  const toggleLike = async (gigId) => {
+    if (!user) {
+      router.push('/giris')
+      return
+    }
+    if (likedGigIds.has(gigId)) {
+      await supabase.from('gig_likes').delete().eq('gig_id', gigId).eq('user_id', user.id)
+      setLikedGigIds((prev) => {
+        const next = new Set(prev)
+        next.delete(gigId)
+        return next
+      })
+    } else {
+      await supabase.from('gig_likes').insert({ gig_id: gigId, user_id: user.id })
+      setLikedGigIds((prev) => new Set(prev).add(gigId))
+    }
   }
 
   const loadGigs = async (q, category, sort) => {
@@ -131,8 +274,7 @@ function XidmetlerContent() {
           <a href="/" className="flex items-center">
             <img src="/frila.png" alt="Frila" className="h-10 w-auto" />
           </a>
-                    <nav className="flex gap-3 sm:gap-6 items-center text-sm sm:text-[15px] overflow-x-auto whitespace-nowrap">
-
+          <nav className="flex gap-3 sm:gap-6 items-center text-sm sm:text-[15px] overflow-x-auto whitespace-nowrap">
             <a href="/xidmetler" className="text-gray-900 font-medium">Xidmətlər</a>
             {!loadingUser && user && profile?.role === 'freelancer' && (
               <a href="/xidmet-elave-et" className="text-gray-500 hover:text-gray-900 transition-colors">Xidmət əlavə et</a>
@@ -156,7 +298,6 @@ function XidmetlerContent() {
 
                   {showNotifications && (
                     <>
-                      <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
                       <div className="fixed inset-0 z-40" onClick={() => setShowNotifications(false)} />
                       <div className="fixed top-16 right-4 left-4 sm:left-auto sm:right-6 sm:w-80 bg-white rounded-2xl border border-gray-200 shadow-xl z-50 max-h-[70vh] overflow-y-auto">
                         <div className="px-4 py-3 border-b border-gray-100">
@@ -186,7 +327,7 @@ function XidmetlerContent() {
                     </>
                   )}
                 </div>
-                
+
                 <a href="/profilim" className="text-gray-500 hover:text-gray-900 transition-colors">Profilim</a>
                 <button onClick={handleSignOut} className="px-4 py-1.5 text-gray-700 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors">
                   Çıxış
@@ -298,83 +439,15 @@ function XidmetlerContent() {
               <a href="/xidmetler" className="text-purple-700 text-sm font-medium hover:underline">Bütün xidmətlərə bax</a>
             </div>
           ) : (
-           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-              {gigs.filter((g) => !activeOnly || g.profiles?.availability === 'active').map((gig) => {
-                const freelancer = gig.profiles
-                const fInitials = (freelancer?.full_name || '?')
-                  .split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
-
-                const coverImage = gig.gig_images && gig.gig_images.length > 0
-                  ? [...gig.gig_images].sort((a, b) => a.sort_order - b.sort_order)[0].image_url
-                  : null
-
-                return (
-                  <a
-                    href={"/gig/" + gig.id}
-                    key={gig.id}
-                    className="group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden block"
-                  >
-                    <div className="aspect-[16/10] bg-gray-100 overflow-hidden">
-                      {coverImage ? (
-                        <img
-                          src={coverImage}
-                          alt={gig.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100">
-                          <span className="text-purple-300 text-sm font-medium">Şəkil yoxdur</span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-4">
-                      <span className="inline-block px-2.5 py-0.5 bg-purple-50 text-purple-700 text-[11px] rounded-full font-medium mb-2">
-                        {gig.category}
-                      </span>
-                      <h3 className="text-sm font-semibold text-gray-900 mb-2 leading-snug line-clamp-2">
-                        {gig.title}
-                      </h3>
-
-                      {freelancer && (
-                        <a
-                          href={"/freelancer/" + freelancer.id}
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2.5 mb-4 group/avatar"
-                        >
-                          {freelancer.avatar_url ? (
-                            <img src={freelancer.avatar_url} alt={freelancer.full_name} className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
-                          ) : (
-                            <div className="w-8 h-8 rounded-full bg-purple-700 text-white flex items-center justify-center text-xs font-semibold flex-shrink-0">
-                              {fInitials}
-                            </div>
-                          )}
-                          <div className="min-w-0">
-                            <p className="text-sm text-gray-700 font-medium group-hover/avatar:text-purple-700 transition-colors truncate">
-                              {freelancer.full_name}
-                            </p>
-                            <p className="text-xs text-gray-400 flex items-center gap-1">
-                              ⭐ Yeni satıcı
-                              {freelancer.availability && (
-                                <span className={`w-1.5 h-1.5 rounded-full ml-1 ${
-                                  freelancer.availability === 'active' ? 'bg-green-500' :
-                                  freelancer.availability === 'busy' ? 'bg-amber-500' : 'bg-red-500'
-                                }`} />
-                              )}
-                            </p>
-                          </div>
-                        </a>
-                      )}
-
-                      <div className="flex justify-between items-center pt-4 border-t border-gray-100">
-                        <span className="text-xs text-gray-400">Başlanğıc qiymət</span>
-                        <span className="text-lg font-semibold text-purple-700">
-                          {gig.price} AZN
-                        </span>
-                      </div>
-                    </div>
-                  </a>
-                )
-              })}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+              {gigs.filter((g) => !activeOnly || g.profiles?.availability === 'active').map((gig) => (
+                <GigCard
+                  key={gig.id}
+                  gig={gig}
+                  isLiked={likedGigIds.has(gig.id)}
+                  onToggleLike={toggleLike}
+                />
+              ))}
             </div>
           )}
         </div>
