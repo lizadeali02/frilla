@@ -105,11 +105,10 @@ export default function XidmetElaveEt() {
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [categories, setCategories] = useState([])
-  const [category, setCategory] = useState('')
-  const [showNewCategory, setShowNewCategory] = useState(false)
-  const [newCategoryName, setNewCategoryName] = useState('')
-  const [creatingCategory, setCreatingCategory] = useState(false)
+  const [mainCategories, setMainCategories] = useState([])
+  const [subcategories, setSubcategories] = useState([])
+  const [mainCategoryId, setMainCategoryId] = useState('')
+  const [subcategoryId, setSubcategoryId] = useState('')
   const [images, setImages] = useState([])
 
   const [activeTiers, setActiveTiers] = useState(['basic'])
@@ -141,14 +140,20 @@ export default function XidmetElaveEt() {
       .eq('id', user.id)
       .single()
     setProfile(profileData)
-    const { data: categoriesData } = await supabase
-      .from('categories')
+    const { data: mainCatsData } = await supabase
+      .from('main_categories')
+      .select('*')
+      .order('sort_order', { ascending: true })
+    setMainCategories(mainCatsData || [])
+    if (mainCatsData && mainCatsData.length > 0) {
+      setMainCategoryId(mainCatsData[0].id)
+    }
+
+    const { data: subCatsData } = await supabase
+      .from('subcategories')
       .select('*')
       .order('name', { ascending: true })
-    setCategories(categoriesData || [])
-    if (categoriesData && categoriesData.length > 0) {
-      setCategory(categoriesData[0].name)
-    }
+    setSubcategories(subCatsData || [])
     setChecking(false)
   }
 const handleCreateCategory = async (e) => {
