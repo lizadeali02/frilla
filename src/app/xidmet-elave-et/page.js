@@ -339,49 +339,59 @@ export default function XidmetElaveEt() {
                 placeholder="Məs: Peşəkar loqo dizaynı hazırlayacağam"
               />
             </div>
-            <div>
-              <label className="text-sm text-gray-700 font-medium">Kateqoriya</label>
-              <select
-                value={category} onChange={(e) => setCategory(e.target.value)}
-                className="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-[15px] bg-white"
-              >
-                {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
-              </select>
-
-              {!showNewCategory ? (
-                <button
-                  type="button"
-                  onClick={() => setShowNewCategory(true)}
-                  className="text-sm text-purple-700 font-medium hover:underline mt-2"
+             <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm text-gray-700 font-medium">Əsas kateqoriya</label>
+                <select
+                  value={mainCategoryId}
+                  onChange={(e) => { setMainCategoryId(e.target.value); setSubcategoryId('') }}
+                  className="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-[15px] bg-white"
                 >
-                  + Yeni kateqoriya yarat
-                </button>
-              ) : (
-                <div className="flex gap-2 mt-2">
-                  <input
-                    type="text"
-                    value={newCategoryName}
-                    onChange={(e) => setNewCategoryName(e.target.value)}
-                    placeholder="Yeni kateqoriya adı"
-                    className="flex-1 px-3 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleCreateCategory}
-                    disabled={creatingCategory}
-                    className="px-4 py-2 bg-purple-700 text-white rounded-xl text-sm font-medium hover:bg-purple-800 transition disabled:opacity-50"
-                  >
-                    {creatingCategory ? '...' : 'Yarat'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowNewCategory(false)}
-                    className="px-4 py-2 border border-gray-200 text-gray-600 rounded-xl text-sm hover:bg-gray-50 transition"
-                  >
-                    Ləğv et
-                  </button>
-                </div>
-              )}
+                  {mainCategories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm text-gray-700 font-medium">Alt kateqoriya</label>
+                <select
+                  value={subcategoryId}
+                  onChange={(e) => setSubcategoryId(e.target.value)}
+                  className="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-[15px] bg-white"
+                >
+                  <option value="">Seç (istəyə bağlı)</option>
+                  {subcategories.filter((s) => s.main_category_id === mainCategoryId).map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+EOF
+cat /home/claude/category_dropdowns.js
+Output
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm text-gray-700 font-medium">Əsas kateqoriya</label>
+                <select
+                  value={mainCategoryId}
+                  onChange={(e) => { setMainCategoryId(e.target.value); setSubcategoryId('') }}
+                  className="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-[15px] bg-white"
+                >
+                  {mainCategories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm text-gray-700 font-medium">Alt kateqoriya</label>
+                <select
+                  value={subcategoryId}
+                  onChange={(e) => setSubcategoryId(e.target.value)}
+                  className="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-[15px] bg-white"
+                >
+                  <option value="">Seç (istəyə bağlı)</option>
+                  {subcategories.filter((s) => s.main_category_id === mainCategoryId).map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div>
               <label className="text-sm text-gray-700 font-medium">Ümumi təsvir</label>
