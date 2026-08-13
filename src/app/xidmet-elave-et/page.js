@@ -364,9 +364,7 @@ export default function XidmetElaveEt() {
                 </select>
               </div>
             </div>
-EOF
-cat /home/claude/category_dropdowns.js
-Output
+
 
             <div className="grid grid-cols-2 gap-3">
               <div>
