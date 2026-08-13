@@ -156,29 +156,7 @@ export default function XidmetElaveEt() {
     setSubcategories(subCatsData || [])
     setChecking(false)
   }
-const handleCreateCategory = async (e) => {
-    e.preventDefault()
-    if (!newCategoryName.trim()) return
 
-    setCreatingCategory(true)
-    const { data, error: insertError } = await supabase
-      .from('categories')
-      .insert({ name: newCategoryName.trim() })
-      .select()
-      .single()
-
-    setCreatingCategory(false)
-
-    if (insertError) {
-      setError('Kateqoriya yaradılarkən xəta: ' + insertError.message)
-      return
-    }
-
-    setCategories((prev) => [...prev, data].sort((a, b) => a.name.localeCompare(b.name)))
-    setCategory(data.name)
-    setNewCategoryName('')
-    setShowNewCategory(false)
-  }
   const updatePackage = (tier, field, value) => {
     setPackages((prev) => ({
       ...prev,
@@ -223,13 +201,17 @@ const handleCreateCategory = async (e) => {
 
     setLoading(true)
 
+    const selectedMainCat = mainCategories.find((c) => c.id === mainCategoryId)
+    const selectedSubCat = subcategories.find((c) => c.id === subcategoryId)
+    const categoryLabel = selectedSubCat ? selectedMainCat?.name + ' — ' + selectedSubCat.name : selectedMainCat?.name
+
     const { data: gigData, error: gigError } = await supabase
       .from('gigs')
       .insert({
         user_id: user.id,
         title,
         description,
-        category,
+        category: categoryLabel,
         price: parseFloat(packages.basic.price),
       })
       .select()
