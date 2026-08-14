@@ -157,9 +157,9 @@ function XidmetlerContent() {
 
   const loadCategories = async () => {
     const { data } = await supabase
-      .from('categories')
+      .from('main_categories')
       .select('*')
-      .order('name', { ascending: true })
+      .order('sort_order', { ascending: true })
     setCategories(data || [])
   }
 
@@ -234,7 +234,7 @@ function XidmetlerContent() {
       request = request.or('title.ilike.%' + q + '%,description.ilike.%' + q + '%,category.ilike.%' + q + '%')
     }
     if (category) {
-      request = request.eq('category', category)
+      request = request.ilike('category', category + '%')
     }
 
     if (sort === 'price_asc') {
