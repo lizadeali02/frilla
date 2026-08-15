@@ -37,7 +37,7 @@ function GigCard({ gig, isLiked, onToggleLike }) {
       className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden block"
     >
       <div
-        className="relative aspect-[4/3] bg-gray-100 overflow-hidden"
+        className="relative aspect-[3/2] bg-gray-100 overflow-hidden"
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => { setHovering(false); setHoverIndex(0) }}
         onMouseMove={handleMouseMove}
@@ -439,7 +439,7 @@ function XidmetlerContent() {
               <a href="/xidmetler" className="text-purple-700 text-sm font-medium hover:underline">Bütün xidmətlərə bax</a>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {gigs.filter((g) => !activeOnly || g.profiles?.availability === 'active').map((gig) => (
                 <GigCard
                   key={gig.id}
