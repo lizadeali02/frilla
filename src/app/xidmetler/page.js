@@ -44,10 +44,10 @@ function GigCard({ gig, isLiked, onToggleLike }) {
       >
         {currentImage ? (
           <img
-  src={gig.image}
-  alt={gig.title}
-  className="w-full h-full object-cover"
-/>
+            src={currentImage}
+            alt={gig.title}
+            className="w-full h-full object-cover"
+          />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100">
             <span className="text-purple-300 text-xs font-medium">Şəkil yoxdur</span>
