@@ -173,13 +173,29 @@ export default function XidmetElaveEt() {
     setPackages((prev) => ({ ...prev, [tier]: { ...emptyPackage } }))
   }
 
-  const handleImagesSelect = (e) => {
+   const handleImagesSelect = (e) => {
     const files = Array.from(e.target.files)
-    const withPreview = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }))
-    setImages((prev) => [...prev, ...withPreview])
+
+    files.forEach((file) => {
+      const img = new window.Image()
+      const url = URL.createObjectURL(file)
+      img.onload = () => {
+        const ratio = img.width / img.height
+        const targetRatio = 3 / 2
+        const tolerance = 0.05
+
+        if (Math.abs(ratio - targetRatio) > tolerance) {
+          setError(`"${file.name}" şəkli düzgün ölçüdə deyil. Kapak şəkilləri 3:2 nisbətində olmalıdır (məs: 1200x800px).`)
+          URL.revokeObjectURL(url)
+          return
+        }
+
+        setImages((prev) => [...prev, { file, preview: url }])
+      }
+      img.src = url
+    })
+
+    e.target.value = ''
   }
 
   const removeImage = (index) => {
