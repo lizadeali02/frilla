@@ -37,7 +37,7 @@ function GigCard({ gig, isLiked, onToggleLike }) {
       className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden block"
     >
       <div
-        className="relative aspect-[3/2] bg-gray-100 overflow-hidden"
+        className="relative h-40 bg-gray-100 overflow-hidden"
         onMouseEnter={() => setHovering(true)}
         onMouseLeave={() => { setHovering(false); setHoverIndex(0) }}
         onMouseMove={handleMouseMove}
