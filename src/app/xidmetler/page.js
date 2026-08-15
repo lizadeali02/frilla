@@ -439,7 +439,7 @@ function XidmetlerContent() {
               <a href="/xidmetler" className="text-purple-700 text-sm font-medium hover:underline">Bütün xidmətlərə bax</a>
             </div>
           ) : (
-            <div className="relative h-36 bg-gray-100 overflow-hidden rounded-t-xl">
+            <div className="relative h-40 bg-gray-100 overflow-hidden rounded-t-xl">
               {gigs.filter((g) => !activeOnly || g.profiles?.availability === 'active').map((gig) => (
                 <GigCard
                   key={gig.id}
