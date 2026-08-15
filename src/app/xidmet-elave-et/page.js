@@ -369,26 +369,7 @@ export default function XidmetElaveEt() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="text-sm text-gray-700 font-medium">Əsas kateqoriya</label>
-                <select
-                  value={mainCategoryId}
-                  onChange={(e) => { setMainCategoryId(e.target.value); setSubcategoryId('') }}
-                  className="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-[15px] bg-white"
-                >
-                  {mainCategories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm text-gray-700 font-medium">Alt kateqoriya</label>
-                <select
-                  value={subcategoryId}
-                  onChange={(e) => setSubcategoryId(e.target.value)}
-                  className="w-full mt-2 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition text-[15px] bg-white"
-                >
-                  <option value="">Seç (istəyə bağlı)</option>
-                  {subcategories.filter((s) => s.main_category_id === mainCategoryId).map((s) => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
-                  ))}
-                </select>
+                
               </div>
             </div>
             <div>
