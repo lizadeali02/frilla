@@ -173,25 +173,39 @@ export default function XidmetElaveEt() {
     setPackages((prev) => ({ ...prev, [tier]: { ...emptyPackage } }))
   }
 
-   const handleImagesSelect = (e) => {
+     const handleImagesSelect = (e) => {
     const files = Array.from(e.target.files)
+    if (files.length === 0) return
+
+    setError('')
 
     files.forEach((file) => {
       const img = new window.Image()
       const url = URL.createObjectURL(file)
+
       img.onload = () => {
         const ratio = img.width / img.height
         const targetRatio = 3 / 2
         const tolerance = 0.05
 
         if (Math.abs(ratio - targetRatio) > tolerance) {
-          setError(`"${file.name}" şəkli düzgün ölçüdə deyil. Kapak şəkilləri 3:2 nisbətində olmalıdır (məs: 1200x800px).`)
+          setError(
+            `"${file.name}" (${img.width}x${img.height}) düzgün ölçüdə deyil. ` +
+            `Kapak şəkilləri 3:2 nisbətində olmalıdır — tövsiyə olunan ölçü: 1200x800px (və ya 1920x1280px). ` +
+            `Bu formatda şəkil yükləyin.`
+          )
           URL.revokeObjectURL(url)
           return
         }
 
         setImages((prev) => [...prev, { file, preview: url }])
       }
+
+      img.onerror = () => {
+        setError(`"${file.name}" faylı şəkil kimi açıla bilmədi. Zəhmət olmasa düzgün şəkil faylı seçin.`)
+        URL.revokeObjectURL(url)
+      }
+
       img.src = url
     })
 
