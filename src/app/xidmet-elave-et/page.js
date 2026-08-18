@@ -194,6 +194,7 @@ export default function XidmetElaveEt() {
             `Kapak şəkilləri 3:2 nisbətində olmalıdır — tövsiyə olunan ölçü: 1200x800px (və ya 1920x1280px). ` +
             `Bu formatda şəkil yükləyin.`
           )
+          window.scrollTo({ top: 0, behavior: 'smooth' })
           URL.revokeObjectURL(url)
           return
         }
@@ -396,12 +397,7 @@ export default function XidmetElaveEt() {
             </div>
 
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-sm text-gray-700 font-medium">Əsas kateqoriya</label>
-                
-              </div>
-            </div>
+
             <div>
               <label className="text-sm text-gray-700 font-medium">Ümumi təsvir</label>
               <textarea
