@@ -110,6 +110,10 @@ export default function XidmetElaveEt() {
   const [mainCategoryId, setMainCategoryId] = useState('')
   const [subcategoryId, setSubcategoryId] = useState('')
   const [images, setImages] = useState([])
+    const [extras, setExtras] = useState([])
+  const [newExtraTitle, setNewExtraTitle] = useState('')
+  const [newExtraPrice, setNewExtraPrice] = useState('')
+  const [newExtraDays, setNewExtraDays] = useState('')
 
   const [activeTiers, setActiveTiers] = useState(['basic'])
   const [packages, setPackages] = useState({
@@ -212,6 +216,22 @@ export default function XidmetElaveEt() {
 
     e.target.value = ''
   }
+  
+  const addExtra = () => {
+    if (!newExtraTitle.trim() || !newExtraPrice) return
+    setExtras((prev) => [...prev, {
+      title: newExtraTitle.trim(),
+      price: newExtraPrice,
+      extra_days: newExtraDays || '0',
+    }])
+    setNewExtraTitle('')
+    setNewExtraPrice('')
+    setNewExtraDays('')
+  }
+
+  const removeExtra = (index) => {
+    setExtras((prev) => prev.filter((_, i) => i !== index))
+  }
 
   const removeImage = (index) => {
     setImages((prev) => prev.filter((_, i) => i !== index))
@@ -271,6 +291,16 @@ export default function XidmetElaveEt() {
       setLoading(false)
       setError('Paketlər əlavə edilərkən xəta: ' + packagesError.message)
       return
+    }
+
+        if (extras.length > 0) {
+      const extraRows = extras.map((ex) => ({
+        gig_id: gigData.id,
+        title: ex.title,
+        price: parseFloat(ex.price),
+        extra_days: parseInt(ex.extra_days) || 0,
+      }))
+      await supabase.from('gig_extras').insert(extraRows)
     }
 
     for (let i = 0; i < images.length; i++) {
