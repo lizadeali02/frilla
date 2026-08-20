@@ -552,6 +552,70 @@ export default function XidmetElaveEt() {
               </button>
             )}
           </div>
+ </div>
+
+        {/* 4. Ekstra xidmətlər */}
+        <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-8 mb-6">
+          <SectionHeader
+            number="4"
+            title="Ekstra xidmətlər"
+            subtitle="İstəyə bağlı — müştərilər əlavə ödəniş qarşılığında əlavə xidmətlər sifariş edə bilər"
+          />
+
+          <div className="pl-12">
+            {extras.length > 0 && (
+              <div className="flex flex-col gap-2 mb-4">
+                {extras.map((ex, i) => (
+                  <div key={i} className="flex items-center justify-between border border-gray-100 rounded-xl px-4 py-2.5">
+                    <div>
+                      <span className="text-sm font-medium text-gray-800">{ex.title}</span>
+                      <span className="text-xs text-gray-400 ml-2">
+                        +{ex.price} AZN{Number(ex.extra_days) > 0 && ` · +${ex.extra_days} gün`}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeExtra(i)}
+                      className="text-xs text-red-500 hover:underline"
+                    >
+                      Sil
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="grid sm:grid-cols-[1fr_auto_auto_auto] gap-2">
+              <input
+                type="text"
+                value={newExtraTitle}
+                onChange={(e) => setNewExtraTitle(e.target.value)}
+                placeholder="Ekstra ad (məs: Sürətli çatdırılma)"
+                className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              />
+              <input
+                type="number"
+                value={newExtraPrice}
+                onChange={(e) => setNewExtraPrice(e.target.value)}
+                placeholder="Qiymət (AZN)"
+                className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition w-full sm:w-32"
+              />
+              <input
+                type="number"
+                value={newExtraDays}
+                onChange={(e) => setNewExtraDays(e.target.value)}
+                placeholder="+gün (0)"
+                className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition w-full sm:w-24"
+              />
+              <button
+                type="button"
+                onClick={addExtra}
+                className="px-4 py-2.5 bg-purple-50 text-purple-700 rounded-xl text-sm font-medium hover:bg-purple-100 transition"
+              >
+                + Əlavə et
+              </button>
+            </div>
+          </div>
         </div>
 
         <button
