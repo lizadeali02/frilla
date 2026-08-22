@@ -394,10 +394,10 @@ export default function Home() {
       <section className="reveal py-24">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-semibold text-center text-gray-900 tracking-tight mb-4">
-            Populyar kateqoriyalar
+            {t('categories_title')}
           </h2>
           <p className="text-center text-gray-500 mb-14">
-            Ehtiyacına uyğun sahəni seç
+            {t('categories_subtitle')}
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
             {KATEQORIYALAR.map((cat) => (
@@ -425,10 +425,10 @@ export default function Home() {
       <section className="reveal py-24 bg-gray-50/50 border-y border-gray-100">
         <div className="max-w-6xl mx-auto px-6">
           <span className="block text-center text-purple-700 text-sm font-semibold tracking-wide uppercase mb-3">
-            Sadə proses
+            {t('how_badge')}
           </span>
           <h2 className="text-3xl md:text-4xl font-semibold text-center text-gray-900 tracking-tight mb-16">
-            Necə işləyir?
+            {t('how_title')}
           </h2>
 
           <div className="relative grid md:grid-cols-3 gap-8">
@@ -441,9 +441,9 @@ export default function Home() {
                 </svg>
               </div>
               <span className="text-xs font-semibold text-purple-400 tracking-wide">ADDIM 1</span>
-              <h3 className="font-semibold text-lg text-gray-900 mt-1 mb-2">Xidmət tap</h3>
+              <h3 className="font-semibold text-lg text-gray-900 mt-1 mb-2">{t('how_step1_title')}</h3>
               <p className="text-gray-500 text-[15px] leading-relaxed">
-                Minlərlə xidmət arasından ehtiyacına uyğun olanı seç
+                {t('how_step1_desc')}
               </p>
             </div>
 
@@ -467,9 +467,9 @@ export default function Home() {
                 </svg>
               </div>
               <span className="text-xs font-semibold text-purple-400 tracking-wide">ADDIM 3</span>
-              <h3 className="font-semibold text-lg text-gray-900 mt-1 mb-2">İndi al</h3>
+              <h3 className="font-semibold text-lg text-gray-900 mt-1 mb-2">{t('how_step3_title')}</h3>
               <p className="text-gray-500 text-[15px] leading-relaxed">
-                Bəyəndiyin paketi seç, birbaşa al və işinə başlasın
+                {t('how_step3_desc')}
               </p>
             </div>
           </div>
