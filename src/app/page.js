@@ -484,18 +484,17 @@ export default function Home() {
 
           <div className="relative">
             <span className="inline-block px-4 py-1.5 bg-white/10 text-white rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
-              Freelancerlər üçün
+              {t('cta_badge')}
             </span>
             <h2 className="text-3xl md:text-5xl font-semibold text-white tracking-tight mb-4">
-              Bacarığını qazanca çevir
+              {t('cta_title')}
             </h2>
             <p className="text-purple-100 mb-10 max-w-xl mx-auto text-lg leading-relaxed">
-              Frila-da freelancer kimi qeydiyyatdan keç, öz xidmətini əlavə et
-              və ilk sifarişini bu gün qazan.
+              {t('cta_subtitle')}
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
-              <a href="/qeydiyyat" className="px-8 py-3.5 bg-white text-purple-700 rounded-full font-medium hover:bg-purple-50 transition-all hover:scale-[1.03] shadow-xl">İndi başla</a>
-              <a href="/xidmetler" className="px-8 py-3.5 border border-white/30 text-white rounded-full font-medium hover:bg-white/10 transition-all">Xidmətlərə bax</a>
+              <a href="/qeydiyyat" className="px-8 py-3.5 bg-white text-purple-700 rounded-full font-medium hover:bg-purple-50 transition-all hover:scale-[1.03] shadow-xl">{t('cta_start')}</a>
+              <a href="/xidmetler" className="px-8 py-3.5 border border-white/30 text-white rounded-full font-medium hover:bg-white/10 transition-all">{t('cta_browse')}</a>
             </div>
           </div>
         </div>
@@ -509,12 +508,12 @@ export default function Home() {
               <img src="/frila.png" alt="Frila" className="h-10 w-auto" />
             </a>
             <p className="text-gray-500 text-sm mt-3 leading-relaxed">
-              Azərbaycanın freelance platforması
+              {t('footer_desc')}
             </p>
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-gray-900 mb-4">Kateqoriyalar</h4>
+            <h4 className="text-sm font-semibold text-gray-900 mb-4">{t('footer_categories')}</h4>
             <ul className="flex flex-col gap-2.5">
               {KATEQORIYALAR.map((cat) => (
                 <li key={cat.name}>
@@ -527,7 +526,7 @@ export default function Home() {
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-gray-900 mb-4">Platforma</h4>
+            <h4 className="text-sm font-semibold text-gray-900 mb-4">{t('footer_platform')}</h4>
             <ul className="flex flex-col gap-2.5">
               <li><a href="/xidmetler" className="text-gray-500 text-sm hover:text-purple-700 transition-colors">Xidmətlər</a></li>
               <li><a href="/qeydiyyat" className="text-gray-500 text-sm hover:text-purple-700 transition-colors">Freelancer ol</a></li>
@@ -536,17 +535,17 @@ export default function Home() {
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold text-gray-900 mb-4">Haqqımızda</h4>
+            <h4 className="text-sm font-semibold text-gray-900 mb-4">{t('footer_about')}</h4>
             <ul className="flex flex-col gap-2.5">
-              <li><a href="/haqqimizda" className="text-gray-500 text-sm hover:text-purple-700 transition-colors">Bizim haqqımızda</a></li>
-              <li><a href="/elaqe" className="text-gray-500 text-sm hover:text-purple-700 transition-colors">Əlaqə</a></li>
-              <li><a href="/qaydalar" className="text-gray-500 text-sm hover:text-purple-700 transition-colors">Qaydalar</a></li>
+              <li><a href="/haqqimizda" className="text-gray-500 text-sm hover:text-purple-700 transition-colors">{t('footer_about_us')}</a></li>
+              <li><a href="/elaqe" className="text-gray-500 text-sm hover:text-purple-700 transition-colors">{t('footer_contact')}</a></li>
+              <li><a href="/qaydalar" className="text-gray-500 text-sm hover:text-purple-700 transition-colors">{t('footer_rules')}</a></li>
             </ul>
           </div>
         </div>
         <div className="border-t border-gray-100 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-6xl mx-auto px-6">
-          <p className="text-sm text-gray-400">
-            © 2026 Frila. Bütün hüquqlar qorunur.
+                    <p className="text-center text-sm text-gray-400">
+            {t('footer_rights')}
           </p>
           <div className="flex items-center gap-4">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-purple-700 transition-colors">
