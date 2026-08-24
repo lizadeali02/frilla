@@ -114,6 +114,9 @@ export default function XidmetElaveEt() {
   const [newExtraTitle, setNewExtraTitle] = useState('')
   const [newExtraPrice, setNewExtraPrice] = useState('')
   const [newExtraDays, setNewExtraDays] = useState('')
+    const [video, setVideo] = useState(null)
+  const [videoPreview, setVideoPreview] = useState(null)
+  const [uploadingVideo, setUploadingVideo] = useState(false)
 
   const [activeTiers, setActiveTiers] = useState(['basic'])
   const [packages, setPackages] = useState({
@@ -233,6 +236,26 @@ export default function XidmetElaveEt() {
     setExtras((prev) => prev.filter((_, i) => i !== index))
   }
 
+  
+  const handleVideoSelect = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    if (file.size > 50 * 1024 * 1024) {
+      setError('Video 50MB-dan kiçik olmalıdır')
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
+    setVideo(file)
+    setVideoPreview(URL.createObjectURL(file))
+  }
+
+  const removeVideo = () => {
+    setVideo(null)
+    setVideoPreview(null)
+  }
+
   const removeImage = (index) => {
     setImages((prev) => prev.filter((_, i) => i !== index))
   }
@@ -325,6 +348,22 @@ export default function XidmetElaveEt() {
         image_url: urlData.publicUrl,
         sort_order: i,
       })
+    }
+
+    if (video) {
+      setUploadingVideo(true)
+      const videoExt = video.name.split('.').pop()
+      const videoPath = `${user.id}/${gigData.id}/video.${videoExt}`
+
+      const { error: videoUploadError } = await supabase.storage
+        .from('gig-images')
+        .upload(videoPath, video)
+
+      if (!videoUploadError) {
+        const { data: videoUrlData } = supabase.storage.from('gig-images').getPublicUrl(videoPath)
+        await supabase.from('gigs').update({ video_url: videoUrlData.publicUrl }).eq('id', gigData.id)
+      }
+      setUploadingVideo(false)
     }
 
     setLoading(false)
