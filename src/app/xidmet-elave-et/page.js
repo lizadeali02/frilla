@@ -505,7 +505,7 @@ export default function XidmetElaveEt() {
                 </div>
               ))}
 
-              <label className="aspect-square rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 transition">
+<label className="aspect-square rounded-2xl border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 transition">
                 <div className="text-center">
                   <svg className="w-6 h-6 text-gray-400 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -514,6 +514,29 @@ export default function XidmetElaveEt() {
                 </div>
                 <input type="file" accept="image/*" multiple onChange={handleImagesSelect} className="hidden" />
               </label>
+            </div>
+
+            <div className="mt-5 pt-5 border-t border-gray-100">
+              <p className="text-sm text-gray-700 font-medium mb-1">Təqdimat videosu (istəyə bağlı, maks 1 ədəd)</p>
+              <p className="text-xs text-gray-400 mb-3">Maks 50MB</p>
+
+              {videoPreview ? (
+                <div className="relative w-full max-w-xs">
+                  <video src={videoPreview} controls className="w-full rounded-2xl border border-gray-100" />
+                  <button
+                    type="button"
+                    onClick={removeVideo}
+                    className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white text-xs w-6 h-6 rounded-full flex items-center justify-center"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <label className="inline-block px-4 py-2.5 bg-gray-50 border border-dashed border-gray-300 rounded-xl text-sm font-medium text-gray-600 cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 transition">
+                  🎬 Video yüklə
+                  <input type="file" accept="video/*" onChange={handleVideoSelect} className="hidden" />
+                </label>
+              )}
             </div>
           </div>
         </div>
