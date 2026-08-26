@@ -293,8 +293,19 @@ const handleOrder = async () => {
                       <img src={img.image_url} alt="" className="w-full h-full object-cover" />
                     </button>
                   ))}
-                </div>
+</div>
               )}
+            </div>
+          )}
+
+          {gig.video_url && (
+            <div>
+              <h2 className="font-semibold text-gray-900 mb-3">Təqdimat videosu</h2>
+              <video
+                src={gig.video_url}
+                controls
+                className="w-full rounded-3xl border border-gray-100 max-h-[500px] bg-black"
+              />
             </div>
           )}
 
